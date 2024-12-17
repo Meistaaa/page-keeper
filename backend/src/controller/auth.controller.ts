@@ -8,15 +8,12 @@ import { sign } from "jsonwebtoken";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHanlder";
 import jwt from "jsonwebtoken";
+
 const salt = 10;
-export interface RegisterResponse {
-  status: number;
-  data: any;
-}
+
 export const Register = asyncHandler(async (req: Request, res: Response) => {
   const body = req.body;
   const { error } = RegisterValidation.validate(body);
-  console.log(body);
   if (error) {
     throw new ApiError(
       400,
@@ -24,7 +21,6 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
       error.details.map((detail) => detail.message)
     );
   }
-  console.log(1);
   const { username, email, password, passwordConfirm } = body;
 
   if (password !== passwordConfirm) {

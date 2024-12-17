@@ -1,9 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { Book } from "./Book";
 
 export interface User extends Document {
   username: string;
   email: string;
   password: string;
+  books?: Book[];
+  cart: Book[];
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -24,6 +27,10 @@ const UserSchema: Schema<User> = new Schema({
     type: String,
     required: [true, "Password is required"],
     unique: true,
+  },
+  books: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Book",
   },
 });
 
