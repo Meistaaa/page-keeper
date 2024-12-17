@@ -7,7 +7,7 @@ import { LoginValidation } from "../validation/login.validation";
 import { sign } from "jsonwebtoken";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHanlder";
-
+import jwt from "jsonwebtoken";
 const salt = 10;
 export interface RegisterResponse {
   status: number;
@@ -36,16 +36,11 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(409, "User with this email already exists");
   }
 
-  const hashedPassword = bcrypt.hash(password, salt, (err, hash) => {
-    if (err) {
-      throw new ApiError(500, "Internal Server Error");
-    }
-    console.log("Hashed password:", hash);
-  });
+  const hashedPassword = await bcrypt.hash(password, salt);
   const user = await UserModel.create({
     username,
     email,
-    password,
+    password: hashedPassword,
   });
   user.save();
 
@@ -56,34 +51,73 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // login
-export const Login = async (req: Request, res: Response) => {
-  try {
-    const body = req.body;
-    const { error } = LoginValidation.validate(body);
-    if (error) {
-      res.status(400).send({ message: error.details });
-      return;
-    }
-    const { email, password } = body;
-    const foundUser = await UserModel.findOne({ email });
-    if (!foundUser) {
-      throw new ApiError(404, "User does not exist");
-    }
-
-    bcrypt.compare(password, foundUser.password, (err, hash) => {
-      if (err) {
-        throw new ApiError(400, "Invalid credentials");
-      }
-      console.log("Hashed password:", hash);
-    });
-
-    const payload = {
-      id: foundUser.id,
-    };
-
-    const token = sign(payload, "secret");
-    return ApiResponse(200, token, "Login Successful", true);
-  } catch (error) {
-    throw new ApiError(500, "Internal Server Error");
+export const Login = asyncHandler(async (req: Request, res: Response) => {
+  const body = req.body;
+  const { error } = LoginValidation.validate(body);
+  if (error) {
+    res.status(400).send({ message: error.details });
+    return;
   }
-};
+  const { email, password } = body;
+  const foundUser = await UserModel.findOne({ email });
+  if (!foundUser) {
+    throw new ApiError(404, "User does not exist");
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(password, foundUser.password);
+  console.log(isPasswordCorrect);
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Invalid credentials");
+  }
+
+  const payload = {
+    id: foundUser.id,
+  };
+  const options = {
+    httpOnly: true,
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  };
+  const token = sign(payload, process.env.JWT_SECRET);
+
+  res.cookie("jwt", token, options);
+  return res.status(201).json(ApiResponse(200, "User logged in Successfully"));
+});
+
+export const AuthenticatedUser = asyncHandler(
+  async (req: Request, res: Response) => {
+    const token = req.cookies.jwt;
+    if (!token) {
+      throw new ApiError(401, "Not authenticated");
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      id: string;
+    };
+    if (!decoded) {
+      throw new ApiError(401, "Unauthenticated User");
+    }
+    const user = await UserModel.findById(decoded.id).select("-password");
+
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    const response = ApiResponse(
+      200,
+      { user },
+      "User authenticated successfully"
+    );
+    return res.status(response.statusCode).json(response);
+  }
+);
+
+export const Logout = asyncHandler(async (req: Request, res: Response) => {
+  res.cookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    maxAge: 0,
+  });
+
+  const response = ApiResponse(200, null, "User logged out successfully");
+  return res.status(response.statusCode).json(response);
+});

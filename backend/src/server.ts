@@ -3,12 +3,14 @@ import cors from "cors";
 import { routes } from "./routes";
 import connectDB from "./db";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const port = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
