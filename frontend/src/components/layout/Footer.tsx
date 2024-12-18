@@ -1,17 +1,14 @@
-import { Link } from 'react-router-dom'; // Import React Router Link
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
       <div className="max-w-screen-xl mx-auto px-4">
-        {/* Top Section: Logo, Description, and Address */}
         <div className="flex flex-wrap gap-8 mb-6">
-          {/* Left: Logo and Website Name */}
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">Page Keeper</h1>
           </div>
 
-          {/* Description */}
           <div className="flex-1">
             <p className="text-sm text-gray-400">
               Page Keeper is your trusted online bookstore. We offer a wide
@@ -22,7 +19,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Address */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Our Address</h3>
             <p className="text-sm text-gray-400">
@@ -35,7 +31,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle Section: Links */}
         <div className="flex flex-wrap justify-between mb-6">
           <div className="flex space-x-6">
             <Link
@@ -64,7 +59,6 @@ export default function Footer() {
             </Link>
           </div>
 
-          {/* Social Media Links */}
           <div className="flex space-x-4">
             <a
               href="https://facebook.com/pagekeeper"
@@ -73,7 +67,6 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <i className="fab fa-facebook-f"></i>{' '}
-              {/* FontAwesome icon for Facebook */}
             </a>
             <a
               href="https://twitter.com/pagekeeper"
@@ -82,7 +75,6 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <i className="fab fa-twitter"></i>{' '}
-              {/* FontAwesome icon for Twitter */}
             </a>
             <a
               href="https://instagram.com/pagekeeper"
@@ -91,7 +83,6 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <i className="fab fa-instagram"></i>{' '}
-              {/* FontAwesome icon for Instagram */}
             </a>
             <a
               href="https://linkedin.com/company/pagekeeper"
@@ -100,12 +91,10 @@ export default function Footer() {
               rel="noopener noreferrer"
             >
               <i className="fab fa-linkedin-in"></i>{' '}
-              {/* FontAwesome icon for LinkedIn */}
             </a>
           </div>
         </div>
 
-        {/* Bottom Section: Copyright */}
         <div className="border-t border-gray-700 pt-4 mt-6 text-center text-sm text-gray-400">
           &copy; {new Date().getFullYear()} Page Keeper. All rights reserved.
         </div>
