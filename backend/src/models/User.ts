@@ -32,6 +32,10 @@ const UserSchema: Schema<User> = new Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Book",
   },
+  cart: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Book",
+  },
 });
 
 const UserModel =

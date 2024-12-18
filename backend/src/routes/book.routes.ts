@@ -11,7 +11,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
 const router = Router();
 
 router.post("/create", authMiddleware, createBook);
-router.get("/get-all-books", getAllBooks);
+router.get("/get-all-books/:page", getAllBooks);
 router.get("/:id", getBookById);
 router.put("/update-book/:id", authMiddleware, updateBook);
 router.delete("/:id", authMiddleware, deleteBook);
