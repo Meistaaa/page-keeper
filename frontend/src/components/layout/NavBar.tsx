@@ -2,7 +2,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export default function NavBar() {
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
+    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white ">
       {/* Logo */}
       <div className="text-xl font-bold">Page Keeper</div>
 

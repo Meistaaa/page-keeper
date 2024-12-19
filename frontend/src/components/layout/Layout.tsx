@@ -7,13 +7,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex flex-col">
+        {/* Navbar */}
         <NavBar />
 
         {/* Sidebar */}
-        <AppSidebar />
+        <AppSidebar side="right" />
 
         {/* Main Content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 mt-16">{children}</main>
 
         {/* Footer */}
         <Footer />
