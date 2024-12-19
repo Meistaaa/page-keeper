@@ -1,55 +1,35 @@
-import { Link } from 'react-router-dom';
-import { Button } from '../ui/button';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export default function NavBar() {
   return (
-    <nav className="flex justify-between items-center px-4 py-2 bg-background shadow-md">
-      <div className="flex items-center gap-2">
-        <h1 className="text-lg font-bold">PAGE KEEPER</h1>
-      </div>
+    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
+      {/* Logo */}
+      <div className="text-xl font-bold">Page Keeper</div>
 
-      <div className="flex space-x-6">
-        <Link
-          to="/about"
-          className="text-sm font-medium text-primary hover:text-primary-dark"
-        >
+      {/* Links */}
+      <div className="space-x-4">
+        <a href="/" className="hover:underline">
+          Home
+        </a>
+        <a href="/about" className="hover:underline">
           About
-        </Link>
-
-        <Link
-          to="/products"
-          className="text-sm font-medium text-primary hover:text-primary-dark"
-        >
-          Products
-        </Link>
-        <Link
-          to="/categories"
-          className="text-sm font-medium text-primary hover:text-primary-dark"
-        >
-          Categories
-        </Link>
-        <Link
-          to="/new-arrivals"
-          className="text-sm font-medium text-primary hover:text-primary-dark"
-        >
-          New Arrivals
-        </Link>
-
-        <Link
-          to="/contact"
-          className="text-sm font-medium text-primary hover:text-primary-dark"
-        >
+        </a>
+        <a href="/contact" className="hover:underline">
           Contact
-        </Link>
+        </a>
       </div>
 
-      <div className="flex gap-4">
-        <Button variant="outline" className="text-sm">
+      {/* Cart */}
+      <div className="flex items-center space-x-4">
+        <SidebarTrigger>
+          <button className="bg-blue-500 p-2 rounded text-white hover:bg-blue-600">
+            Cart
+          </button>
+        </SidebarTrigger>
+
+        <button className="bg-green-500 p-2 rounded text-white hover:bg-green-600">
           Login
-        </Button>
-        <Button variant="outline" className="text-sm">
-          Signup
-        </Button>
+        </button>
       </div>
     </nav>
   );

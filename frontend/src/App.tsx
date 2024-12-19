@@ -1,33 +1,15 @@
-import NavBar from '../src/components/layout/NavBar'; // Adjust the path if necessary
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Footer from './components/layout/Footer';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-
-// import NavBar from "./components/NavBar";  // Path to your NavBar component
-// import About from "./pages/About";         // Example About page
-// import Contact from "./pages/Contact";     // Example Contact page
-// import Home from "./pages/Home";           // Example Home page
-// import Login from "./pages/Login";         // Example Login page
-// import Signup from "./pages/Signup";       // Example Signup page
-// import Products from "./pages/Products";   // Example Products page
-// import Categories from "./pages/Categories"; // Example Categories page
-// import NewArrivals from "./pages/NewArrivals"; // Example New Arrivals page
+import { BrowserRouter as Router } from 'react-router-dom';
+import Layout from './components/layout/Layout';
 
 function App() {
   return (
     <Router>
-      <NavBar />
-      <Footer />
-      {/* <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/new-arrivals" element={<NewArrivals />} />
-      </Routes> */}
+      <Layout>
+        {/* Add your main content or routes here */}
+        <div>
+          <h1>Welcome to Page Keeper</h1>
+        </div>
+      </Layout>
     </Router>
   );
 }
