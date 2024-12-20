@@ -134,6 +134,7 @@ export const updateBook = asyncHandler(async (req: Request, res: Response) => {
 // DELETE BOOK
 export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
+  console.log("object");
   const book = await BookModel.findOneAndDelete({
     _id: req.params.id,
     user,

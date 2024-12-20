@@ -6,8 +6,7 @@ import BookModel from "../models/Book";
 import { ApiResponse } from "../utils/ApiResponse";
 import { CartValidation } from "../validation/cart.validation";
 
-// ... other imports
-
+// ADD TO CART
 export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
   const bookId = req.params.id;
@@ -57,48 +56,96 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
       price: book.price * quantity,
     });
   }
-  user.cart.push(cart._id);
+
+  book.quantity -= quantity;
+  if (!user.cart.includes(cart._id)) {
+    user.cart.push(cart._id);
+  }
   await user.save();
   cart.totalAmount = cart.items.reduce((total, item) => total + item.price, 0);
   await cart.save();
+  await book.save();
   const response = ApiResponse(200, { cart }, "Added to cart successfully");
   res.status(response.statusCode).json(response);
 });
 
+// REMOVE BOOKS FROM CART
 export const removeFromCart = asyncHandler(
   async (req: Request, res: Response) => {
-    const { bookId } = req.body;
+    const bookId = req.params.id;
     const user = req["user"];
 
-    try {
-      const cart = await CartModel.findOne({ user: user._id });
-
-      if (!cart) {
-        throw new ApiError(404, "Cart not found");
-      }
-
-      const bookIndex = cart.items.findIndex(
-        (item) => item.book.toString() === bookId
-      );
-
-      if (bookIndex !== -1) {
-        cart.items[bookIndex].quantity--;
-        if (cart.items[bookIndex].quantity === 0) {
-          cart.items.splice(bookIndex, 1);
-        }
-        await cart.save();
-        res.status(200).json({ message: "Book removed from cart" });
-      } else {
-        throw new ApiError(404, "Book not found in cart");
-      }
-    } catch (error) {
-      throw new ApiError(500, "Error removing book from cart");
+    const cart = await Cart.findOne({ user: user._id });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
     }
+
+    const cartItem = cart.items.find((item) => item.book.toString() === bookId);
+
+    if (cartItem) {
+      // Restore book stock
+      const book = await BookModel.findById(bookId);
+      if (book) {
+        book.quantity += cartItem.quantity;
+        await book.save();
+      }
+    }
+
+    cart.items = cart.items.filter((item) => item.book.toString() !== bookId);
+
+    cart.totalAmount = cart.items.reduce(
+      (total, item) => total + item.price,
+      0
+    );
+    await cart.save();
+    res.status(200).json({ message: "Book removed from cart" });
   }
 );
-export const updateCart = asyncHandler(
-  async (req: Request, res: Response) => {}
-);
+
+// UPDATE CARTS
+export const updateCart = asyncHandler(async (req: Request, res: Response) => {
+  const bookId = req.params.id;
+  const { quantity } = req.body;
+  const user = req["user"];
+  const book = await BookModel.findById(bookId);
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  if (book.quantity < quantity) {
+    return res.status(400).json({ message: "Insufficient stock" });
+  }
+  const cart = await Cart.findOne({ user: user._id });
+  if (!cart) {
+    return res.status(404).json({ message: "Cart not found" });
+  }
+
+  const cartItem = cart.items.find((item) => item.book.toString() === bookId);
+
+  if (!cartItem) {
+    return res.status(404).json({ message: "Item not found in cart" });
+  }
+  const quantityDifference = quantity - cartItem.quantity;
+
+  // Check if we have enough stock for an increase in quantity
+  if (quantityDifference > 0 && book.quantity < quantityDifference) {
+    return res.status(400).json({ message: "Insufficient stock" });
+  }
+
+  // Update book stock
+  book.quantity -= quantityDifference; // Will add stock if quantityDifference is negative
+  await book.save();
+
+  // Update cart item
+  cartItem.quantity = quantity;
+  cartItem.price = book.price * quantity;
+  cart.totalAmount = cart.items.reduce((total, item) => total + item.price, 0);
+
+  await cart.save();
+  res.json(cart);
+});
+
+// GET CART
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
   const cart = await Cart.findOne({ user: user._id }).populate("items.book");
@@ -107,5 +154,27 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
     return res.status(404).json({ message: "Cart not found" });
   }
   const response = ApiResponse(200, { cart }, "Added to cart successfully");
+  res.status(response.statusCode).json(response);
+});
+export const clearCart = asyncHandler(async (req: Request, res: Response) => {
+  const user = req["user"];
+  const cart = await Cart.findOne({ user: user._id });
+  if (!cart) {
+    return res.status(404).json({ message: "Cart not found" });
+  }
+
+  // Restore stock for all items
+  for (const item of cart.items) {
+    const book = await BookModel.findById(item.book);
+    if (book) {
+      book.quantity += item.quantity;
+      await book.save();
+    }
+  }
+
+  cart.items = [];
+  cart.totalAmount = 0;
+  await cart.save();
+  const response = ApiResponse(200, "Cleared Cart successfully");
   res.status(response.statusCode).json(response);
 });
