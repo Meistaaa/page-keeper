@@ -78,6 +78,34 @@ export const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
   res.status(response.statusCode).json(response);
 });
 
+// GET USER BOOKS
+export const getUserBooks = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req["user"];
+    console.log(user);
+    const page = parseInt(req.params.page || "1", 10); // Default to page 1 if not provided
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const totalBooks = await BookModel.countDocuments();
+    const books = await BookModel.find({ user: user._id })
+      .skip(skip)
+      .limit(limit);
+    const response = ApiResponse(
+      200,
+      {
+        books,
+        pagination: {
+          totalBooks,
+          currentPage: page,
+          totalPages: Math.ceil(totalBooks / limit),
+        },
+      },
+      "Books retrieved successfully"
+    );
+    res.status(response.statusCode).json(response);
+  }
+);
 // GET A SINGLE BOOK
 
 export const getBookById = asyncHandler(async (req: Request, res: Response) => {

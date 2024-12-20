@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { User } from "../models/User";
+import { User } from "./user.interface";
 
 export interface Book extends Document {
   user: User;
