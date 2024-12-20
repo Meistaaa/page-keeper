@@ -80,6 +80,7 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   return res.status(201).json(ApiResponse(200, "User logged in Successfully"));
 });
 
+// GET AUTHENTICATED USER
 export const AuthenticatedUser = asyncHandler(
   async (req: Request, res: Response) => {
     const token = req.cookies.jwt;
@@ -107,6 +108,7 @@ export const AuthenticatedUser = asyncHandler(
   }
 );
 
+// LOGOUT
 export const Logout = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("jwt", {
     httpOnly: true,

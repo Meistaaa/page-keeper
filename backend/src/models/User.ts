@@ -34,7 +34,7 @@ const UserSchema: Schema<User> = new Schema({
   },
   cart: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Book",
+    ref: "Cart",
   },
 });
 

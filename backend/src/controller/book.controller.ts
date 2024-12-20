@@ -5,6 +5,8 @@ import { asyncHandler } from "../utils/asyncHanlder";
 import { ApiResponse } from "../utils/ApiResponse";
 import BookModel from "../models/Book";
 import { BookValidation } from "../validation/book.validation";
+import UserModel from "../models/User";
+import mongoose from "mongoose";
 
 // CREATE BOOK
 
@@ -43,7 +45,7 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
     quantity,
     user: user._id,
   });
-  user.books = book;
+  user.books.push(book._id);
   user.save();
   book.save();
   const response = ApiResponse(201, { book }, "Book created successfully");
@@ -58,8 +60,9 @@ export const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
 
   const totalBooks = await BookModel.countDocuments();
+  console.log(totalBooks);
   const books = await BookModel.find().skip(skip).limit(limit);
-
+  console.log(books);
   const response = ApiResponse(
     200,
     {
@@ -78,10 +81,17 @@ export const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
 // GET A SINGLE BOOK
 
 export const getBookById = asyncHandler(async (req: Request, res: Response) => {
-  const book = await BookModel.findById(req.params.id).populate("user");
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid book ID");
+  }
+  console.log(id);
+  const book = await BookModel.findById(id);
+
   if (!book) {
     throw new ApiError(404, "Book not found");
   }
+
   const response = ApiResponse(200, { book }, "Book retrieved successfully");
   res.status(response.statusCode).json(response);
 });
@@ -131,6 +141,9 @@ export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
   if (!book) {
     throw new ApiError(404, "Book not found");
   }
+  await UserModel.findByIdAndUpdate(user._id, {
+    $pull: { books: book._id },
+  });
   const response = ApiResponse(200, null, "Book deleted successfully");
   res.status(response.statusCode).json(response);
 });

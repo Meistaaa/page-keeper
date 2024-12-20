@@ -12,8 +12,8 @@ const router = Router();
 
 router.post("/create", authMiddleware, createBook);
 router.get("/get-all-books/:page", getAllBooks);
-router.get("/:id", getBookById);
+router.get("/get-book-by-id/:id", getBookById);
 router.put("/update-book/:id", authMiddleware, updateBook);
-router.delete("/:id", authMiddleware, deleteBook);
+router.delete("/delete-book/:id", authMiddleware, deleteBook);
 
 export default router;
