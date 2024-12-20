@@ -1,19 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { User } from "./User";
-
-export interface ICartItem {
-  book: Types.ObjectId;
-  quantity: number;
-  price: number;
-}
-
-export interface ICart {
-  user: User;
-  items: ICartItem[];
-  totalAmount: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { ICart, ICartItem } from "../interfaces/cart.interface";
 
 const cartItemSchema = new mongoose.Schema<ICartItem>({
   book: {

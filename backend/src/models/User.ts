@@ -1,13 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { Book } from "./Book";
-
-export interface User extends Document {
-  username: string;
-  email: string;
-  password: string;
-  books?: Book[];
-  cart: Book[];
-}
+import { User } from "../interfaces/user.interface";
 
 const UserSchema: Schema<User> = new Schema({
   username: {

@@ -1,28 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { User } from "./User";
-
-export interface Book extends Document {
-  user: User;
-  title: string;
-  author: string;
-  description?: string;
-  publicationDate: Date;
-  genre:
-    | "Fiction"
-    | "Non-fiction"
-    | "Science Fiction"
-    | "Mystery"
-    | "Romance"
-    | "Thriller"
-    | "Biography"
-    | "History"
-    | "Self-help"
-    | "Other";
-  publisher?: string;
-  inStock: number;
-  price: number;
-  quantity: number;
-}
+import { Book } from "../interfaces/book.interface";
 
 const bookSchema = new Schema<Book>(
   {
