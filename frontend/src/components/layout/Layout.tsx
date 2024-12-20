@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavBar />
 
         {/* Sidebar */}
-        <AppSidebar side="right" />
+        <AppSidebar />
 
         {/* Main Content */}
         <main className="flex-1 mt-16">{children}</main>
