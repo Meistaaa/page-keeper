@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sheet,
@@ -89,9 +88,12 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <Button className="hidden md:block rounded-full bg-[#98F9B3] px-8 text-black hover:bg-[#98F9B3]/90">
+        <Link
+          to="/login"
+          className="hidden md:block rounded-full bg-[#98F9B3] px-8 py-2 text-black hover:bg-[#98F9B3]/90"
+        >
           Sign In
-        </Button>
+        </Link>
 
         {/* TODO CART */}
       </div>
