@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-gray-800 text-white py-8 w-full">
       <div className="max-w-screen-xl mx-auto px-4">
         <div className="flex flex-wrap gap-8 mb-6">
           <div className="flex items-center gap-2">
@@ -66,7 +66,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fab fa-facebook-f"></i>{' '}
+              <i className="fab fa-facebook-f"></i>{" "}
             </a>
             <a
               href="https://twitter.com/pagekeeper"
@@ -74,7 +74,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fab fa-twitter"></i>{' '}
+              <i className="fab fa-twitter"></i>{" "}
             </a>
             <a
               href="https://instagram.com/pagekeeper"
@@ -82,7 +82,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fab fa-instagram"></i>{' '}
+              <i className="fab fa-instagram"></i>{" "}
             </a>
             <a
               href="https://linkedin.com/company/pagekeeper"
@@ -90,7 +90,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fab fa-linkedin-in"></i>{' '}
+              <i className="fab fa-linkedin-in"></i>{" "}
             </a>
           </div>
         </div>

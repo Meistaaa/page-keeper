@@ -1,8 +1,6 @@
-import React from 'react';
-
 const LoginPage = () => {
   return (
-    <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded-md shadow-md">
+    <div className="p-6 max-w-md mx-auto mt-10  rounded-md shadow-md">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
       <form>
         <div className="mb-4">

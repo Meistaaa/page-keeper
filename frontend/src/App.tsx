@@ -1,20 +1,53 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import LoginPage from './components/pages/LoginPage';
 import SignupPage from './components/pages/SignUpPage';
+import HomePage from './components/pages/HomePage';
+import LoginPage from './components/pages/LoginPage';
 import UserPage from './components/pages/UserPage';
+import AuthenticationLayout from './components/layout/AuthenticationLayout';
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<h1>Welcome to Page Keeper</h1>} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/user" element={<UserPage />} />
-        </Routes>
-      </Layout>
+      {/* Routes that need Layout */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <HomePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/user"
+          element={
+            <Layout>
+              <UserPage />
+            </Layout>
+          }
+        />
+      </Routes>
+
+      {/* Routes that need AuthenticationLayout */}
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <AuthenticationLayout>
+              <LoginPage />
+            </AuthenticationLayout>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <AuthenticationLayout>
+              <SignupPage />
+            </AuthenticationLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

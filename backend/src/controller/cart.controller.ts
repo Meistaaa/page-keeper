@@ -25,7 +25,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   const book = await BookModel.findById(bookId);
   console.log(book);
   if (!book) {
-    return res.status(404).json({ message: "Book not found" });
+    throw new ApiError(400, "Book not found");
   }
 
   if (book.quantity < quantity) {
@@ -77,7 +77,7 @@ export const removeFromCart = asyncHandler(
 
     const cart = await Cart.findOne({ user: user._id });
     if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
+      throw new ApiError(404, "Cart Not Found ");
     }
 
     const cartItem = cart.items.find((item) => item.book.toString() === bookId);
@@ -98,7 +98,8 @@ export const removeFromCart = asyncHandler(
       0
     );
     await cart.save();
-    res.status(200).json({ message: "Book removed from cart" });
+    const response = ApiResponse(200, "Book removed from cart");
+    res.status(response.statusCode).json(response);
   }
 );
 
@@ -109,7 +110,7 @@ export const updateCart = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
   const book = await BookModel.findById(bookId);
   if (!book) {
-    return res.status(404).json({ message: "Book not found" });
+    throw new ApiError(404, "Book Not Found ");
   }
 
   if (book.quantity < quantity) {
@@ -117,19 +118,19 @@ export const updateCart = asyncHandler(async (req: Request, res: Response) => {
   }
   const cart = await Cart.findOne({ user: user._id });
   if (!cart) {
-    return res.status(404).json({ message: "Cart not found" });
+    throw new ApiError(404, "Cart Not Found ");
   }
 
   const cartItem = cart.items.find((item) => item.book.toString() === bookId);
 
   if (!cartItem) {
-    return res.status(404).json({ message: "Item not found in cart" });
+    throw new ApiError(404, "item not found in cart ");
   }
   const quantityDifference = quantity - cartItem.quantity;
 
   // Check if we have enough stock for an increase in quantity
   if (quantityDifference > 0 && book.quantity < quantityDifference) {
-    return res.status(400).json({ message: "Insufficient stock" });
+    throw new ApiError(400, "Insufficient stock ");
   }
 
   // Update book stock
@@ -151,7 +152,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
   const cart = await Cart.findOne({ user: user._id }).populate("items.book");
 
   if (!cart) {
-    return res.status(404).json({ message: "Cart not found" });
+    throw new ApiError(404, "Cart Not Found ");
   }
   const response = ApiResponse(200, { cart }, "Added to cart successfully");
   res.status(response.statusCode).json(response);
@@ -160,7 +161,7 @@ export const clearCart = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
   const cart = await Cart.findOne({ user: user._id });
   if (!cart) {
-    return res.status(404).json({ message: "Cart not found" });
+    throw new ApiError(404, "Cart Not Found ");
   }
 
   // Restore stock for all items

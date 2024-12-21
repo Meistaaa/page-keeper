@@ -8,20 +8,31 @@ import {
   restoreBookStock,
 } from "../utils/order.utils";
 import { asyncHandler } from "../utils/asyncHanlder";
+import { ShippingAddressValidation } from "../validation/order.validation";
+import { ApiError } from "../utils/ApiError";
+import { ApiResponse } from "../utils/ApiResponse";
 
 // Create order from cart
 export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const { shippingAddress } = req.body;
+  const { error } = ShippingAddressValidation.validate(shippingAddress);
+  if (error) {
+    throw new ApiError(
+      400,
+      "Validation failed",
+      error.details.map((detail) => detail.message)
+    );
+  }
   const user = req["user"];
   const cart = await Cart.findOne({ user: user._id }).populate("items.book");
   if (!cart || cart.items.length === 0) {
-    return res.status(400).json({ message: "Cart is empty" });
+    throw new ApiError(400, "Cart is empty");
   }
 
   // Validate stock availability
   const isValid = await validateOrderItems(cart.items);
   if (!isValid) {
-    return res.status(400).json({ message: "Some items are out of stock" });
+    throw new ApiError(400, "Some item are out of stock");
   }
 
   // Create order
@@ -44,8 +55,8 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
     user.orders.push(order._id);
   }
   await Promise.all([order.save(), cart.save(), user.save()]);
-
-  res.status(201).json(order);
+  const response = ApiResponse(200, { order }, "Order created successfully ");
+  res.status(response.statusCode).json(response);
 });
 
 // Get user's orders
@@ -56,7 +67,12 @@ export const getUserOrders = asyncHandler(
       .populate("items.book")
       .sort({ createdAt: -1 });
 
-    res.json(orders);
+    const response = ApiResponse(
+      200,
+      { orders },
+      "Retrieved Orders successfully "
+    );
+    res.status(response.statusCode).json(response);
   }
 );
 
@@ -70,10 +86,14 @@ export const getOrderById = asyncHandler(
     }).populate("items.book");
 
     if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+      throw new ApiError(400, "Order Not Found");
     }
-
-    res.json(order);
+    const response = ApiResponse(
+      200,
+      { order },
+      "Retrieved Order successfully "
+    );
+    res.status(response.statusCode).json(response);
   }
 );
 
@@ -84,13 +104,14 @@ export const updateOrderStatus = asyncHandler(
 
     const order = await Order.findById(req.params.id);
     if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+      throw new ApiError(400, "Order Not Found");
     }
 
     order.status = status;
     await order.save();
 
-    res.json(order);
+    const response = ApiResponse(200, { order }, "Updated Order successfully ");
+    res.status(response.statusCode).json(response);
   }
 );
 
@@ -101,13 +122,18 @@ export const updatePaymentStatus = asyncHandler(
 
     const order = await Order.findById(req.params.id);
     if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+      throw new ApiError(400, "Order Not Found");
     }
 
     order.paymentStatus = paymentStatus;
     await order.save();
 
-    res.json(order);
+    const response = ApiResponse(
+      200,
+      { order },
+      "Updated Order Payment  successfully "
+    );
+    res.status(response.statusCode).json(response);
   }
 );
 
@@ -128,9 +154,10 @@ export const removeOrder = asyncHandler(async (req: Request, res: Response) => {
 
   // Only allow cancellation of pending or processing orders
   if (!["pending", "processing"].includes(order.status)) {
-    return res.status(400).json({
-      message: "Cannot remove orders that are shipped, delivered, or cancelled",
-    });
+    throw new ApiError(
+      400,
+      "Cannot remove orders that are shipped, delivered, or cancelled"
+    );
   }
 
   // Restore book stock
@@ -139,5 +166,6 @@ export const removeOrder = asyncHandler(async (req: Request, res: Response) => {
   // Remove the order
   await order.deleteOne();
 
-  res.json({ message: "Order removed successfully" });
+  const response = ApiResponse(200, "Removed Order successfully ");
+  res.status(response.statusCode).json(response);
 });
