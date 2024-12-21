@@ -54,6 +54,7 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     res.status(400).send({ message: error.details });
     return;
   }
+  console.log(body);
   const { email, password } = body;
   const foundUser = await UserModel.findOne({ email });
   if (!foundUser) {
@@ -77,7 +78,7 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   const token = sign(payload, process.env.JWT_SECRET);
 
   res.cookie("jwt", token, options);
-  return res.status(201).json(ApiResponse(200, "User logged in Successfully"));
+  return res.status(200).json(ApiResponse(200, "User logged in Successfully"));
 });
 
 // GET AUTHENTICATED USER

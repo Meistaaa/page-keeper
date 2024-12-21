@@ -1,62 +1,30 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { loginSchema } from "@/validations/auth";
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import LoginForm from "../Forms/LoginForm";
 
 export function LoginPage() {
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  function onSubmit(data: LoginFormValues) {
-    console.log(data);
-    // Handle login logic here
-  }
-
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="Enter your email"
-          {...form.register("email")}
-        />
-        {form.formState.errors.email && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.email.message}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="max-w-4xl w-full flex flex-col md:flex-row bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+        {/* Left Section: Form */}
+        <div className="w-full md:w-1/2 px-8">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+            Welcome Back, Book Lover!
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 my-2">
+            Sign in to explore our vast collection and keep your bookshelf
+            growing.
           </p>
-        )}
-      </div>
+          <LoginForm />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          {...form.register("password")}
-        />
-        {form.formState.errors.password && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.password.message}
-          </p>
-        )}
+        {/* Right Section: Image */}
+        <div className="w-full md:w-1/2 hidden md:flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+          <img
+            src="/path-to-your-image.png"
+            alt="Reading Illustration"
+            className="h-96 w-auto"
+          />
+        </div>
       </div>
-
-      <Button type="submit" className="w-full">
-        Login
-      </Button>
-    </form>
+    </div>
   );
 }
