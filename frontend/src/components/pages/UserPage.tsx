@@ -1,5 +1,3 @@
-import React from 'react';
-
 const UserPage = () => {
   return (
     <div className="p-6 max-w-md mx-auto mt-10 bg-white rounded-md shadow-md">

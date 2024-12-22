@@ -4,7 +4,6 @@ import UserModel from "../models/User";
 import { ApiError } from "../utils/ApiError";
 import bcrypt from "bcryptjs";
 import { LoginValidation } from "../validation/login.validation";
-import { sign } from "jsonwebtoken";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHanlder";
 import jwt from "jsonwebtoken";
@@ -75,15 +74,19 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   };
-  const token = sign(payload, process.env.JWT_SECRET);
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
   res.cookie("jwt", token, options);
+  console.log("Set-Cookie header:", res.getHeader("Set-Cookie"));
   return res.status(200).json(ApiResponse(200, "User logged in Successfully"));
 });
 
 // GET AUTHENTICATED USER
 export const AuthenticatedUser = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log(req.cookies);
     const token = req.cookies.jwt;
     if (!token) {
       throw new ApiError(401, "Not authenticated");
@@ -102,7 +105,7 @@ export const AuthenticatedUser = asyncHandler(
 
     const response = ApiResponse(
       200,
-      { user },
+      { user, accessToken: token },
       "User authenticated successfully"
     );
     return res.status(response.statusCode).json(response);

@@ -35,7 +35,6 @@ const LoginForm = () => {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setLoading(true);
     try {
-      console.log(import.meta.env.API_URI);
       setLoading(true);
       const response = await axios.post(
         `http://localhost:3001/api/auth/login`,
