@@ -18,10 +18,9 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URI}/api/auth/me`,
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
+        console.log(response.data);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);

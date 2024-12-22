@@ -8,6 +8,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 export const authMiddleware = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req);
       const token = req.cookies.jwt;
 
       if (!token) {
