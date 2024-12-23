@@ -29,7 +29,7 @@ const HomePage = () => {
           categories={bookCategories}
           onCategoryChange={handleCategoryChange}
         />
-        <BestSellingBooks></BestSellingBooks>
+        <BestSellingBooks />
       </main>
     </div>
   );

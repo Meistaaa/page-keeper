@@ -1,7 +1,7 @@
 import { User } from "./User";
 
 export interface Book {
-  id: string;
+  _id: string;
   coverImage: string;
   user: User;
   title: string;

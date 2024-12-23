@@ -4,11 +4,13 @@ import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent } from "../ui/card";
 import BookCard from "../Cards/Book";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BestSellingBooks = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +34,9 @@ const BestSellingBooks = () => {
 
     fetchData();
   }, []);
+  const handleNavigateToBook = (id: string) => {
+    navigate(`/books/${id}`);
+  };
   const handleAddToCart = (book: Book) => {
     // Implement cart functionality
     console.log("Adding to cart:", book.title);
@@ -77,9 +82,10 @@ const BestSellingBooks = () => {
             ))
           : books.map((book: Book) => (
               <BookCard
-                key={book.id}
+                key={book._id}
                 book={book}
                 onAddToCart={handleAddToCart}
+                onCardClick={() => handleNavigateToBook(book._id)}
               />
             ))}
       </div>

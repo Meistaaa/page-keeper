@@ -1,40 +1,27 @@
-import { Heart, ShoppingCart, Star } from "lucide-react";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
+import { Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Book } from "@/types/Book";
 
 interface BookCardProps {
   book: Book;
-  onAddToCart?: (book: Book) => void;
+  onCardClick: () => void;
+  onAddToCart: (book: Book) => void;
 }
 
-export default function BookCard({ book, onAddToCart }: BookCardProps) {
-  const {
-    title,
-    author,
-    coverImage,
-    description,
-    publicationDate,
-    genre,
-    rating,
-    publisher,
-    inStock,
-    price,
-  } = book;
+export default function BookCard({
+  book,
+  onAddToCart,
+  onCardClick,
+}: BookCardProps) {
+  const { title, author, coverImage, rating, price } = book;
 
-  const isOutOfStock = inStock === 0;
   console.log(rating);
   return (
-    <Card className="w-[300px] overflow-hidden group mr-12">
+    <Card
+      onClick={onCardClick}
+      className="w-[300px] overflow-hidden group mr-12"
+    >
       <div className="relative">
         {/* {discount && (
           <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
@@ -64,8 +51,15 @@ export default function BookCard({ book, onAddToCart }: BookCardProps) {
         <Button className=" right-3  p-4 bg-muted border transition-colors hover:bg-muted ">
           <Heart className="w-5 h-5 text-black font-bold" />
         </Button>
-        <Button className="w-full bg-[#5D4B8C] text-white" variant="outline">
-          Add To Cart
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart(book);
+          }}
+          className="w-full bg-[#5D4B8C] text-white"
+          variant="outline"
+        >
+          <ShoppingCart /> Add To Cart
         </Button>
       </CardFooter>
     </Card>
