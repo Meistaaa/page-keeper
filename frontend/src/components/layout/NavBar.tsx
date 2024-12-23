@@ -6,6 +6,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { UserContext } from "@/context/UserContext";
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 interface MenuItems {
   to: string;
   label: string;
@@ -19,7 +24,29 @@ const menuItems: MenuItems[] = [
 ];
 
 export default function Navbar() {
+  const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
+  const user = React.useContext(UserContext);
+
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URI}/api/auth/logout`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        console.log("object");
+        toast.success("User Logged Out Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <nav className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8">
       {/* FOR SMALL SCREENS  */}
@@ -58,14 +85,21 @@ export default function Navbar() {
             <span className="text-white">Keeper</span>
           </Link>
         </div>
-        <div>
+        {user ? (
+          <Button
+            onClick={handleLogout}
+            className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+          >
+            Sign Out
+          </Button>
+        ) : (
           <Link
             to="/login"
             className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
           >
             Sign In
           </Link>
-        </div>
+        )}
       </div>
 
       {/* Navigation Links for Larger Screens */}
@@ -88,12 +122,21 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <Link
-          to="/login"
-          className="hidden md:block rounded-full bg-[#98F9B3] px-8 py-2 text-black hover:bg-[#98F9B3]/90"
-        >
-          Sign In
-        </Link>
+        {user ? (
+          <Button
+            onClick={handleLogout}
+            className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+          >
+            Sign Out
+          </Button>
+        ) : (
+          <Link
+            to="/login"
+            className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+          >
+            Sign in
+          </Link>
+        )}
 
         {/* TODO CART */}
       </div>

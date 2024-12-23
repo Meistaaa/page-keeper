@@ -9,8 +9,8 @@ import { UserProvider } from "./context/UserContext";
 
 function App() {
   return (
-    <UserProvider>
-      <Router>
+    <Router>
+      <UserProvider>
         <Routes>
           {/* Routes with Layout */}
           <Route
@@ -48,8 +48,8 @@ function App() {
             }
           />
         </Routes>
-      </Router>
-    </UserProvider>
+      </UserProvider>
+    </Router>
   );
 }
 

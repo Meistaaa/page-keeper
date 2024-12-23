@@ -114,10 +114,12 @@ export const AuthenticatedUser = asyncHandler(
 
 // LOGOUT
 export const Logout = asyncHandler(async (req: Request, res: Response) => {
+  console.log("object");
   res.cookie("jwt", {
     httpOnly: true,
     secure: true,
     maxAge: 0,
+    expires: new Date(0),
   });
 
   const response = ApiResponse(200, null, "User logged out successfully");
