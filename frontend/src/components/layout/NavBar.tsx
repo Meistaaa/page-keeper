@@ -5,7 +5,7 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Loader2, Menu } from "lucide-react";
 import { UserContext } from "@/context/UserContext";
 import { useContext, useState } from "react";
 import axios from "axios";
@@ -96,8 +96,10 @@ export default function Navbar() {
           <Button
             onClick={handleLogout}
             className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+            disabled={loading}
           >
-            Sign Out
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit
           </Button>
         ) : (
           <Link
@@ -133,7 +135,9 @@ export default function Navbar() {
           <Button
             onClick={handleLogout}
             className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+            disabled={loading}
           >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Sign Out
           </Button>
         ) : (

@@ -30,7 +30,7 @@ const LoginForm = () => {
     throw new Error("UpdateUserComponent must be used within a UserProvider");
   }
 
-  const { user, setUser } = userContext;
+  const { setUser } = userContext;
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
