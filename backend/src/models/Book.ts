@@ -8,6 +8,11 @@ const bookSchema = new Schema<Book>(
       required: [true, "Book title is required"],
       trim: true,
     },
+    coverImage: {
+      type: String,
+      required: [true, "Cover Image is required"],
+      trim: true,
+    },
     author: {
       type: String,
       required: [true, "Author name is required"],
@@ -53,6 +58,11 @@ const bookSchema = new Schema<Book>(
       type: Number,
       required: [true, "Stock quantity is required"],
       min: [0, "Stock quantity cannot be negative"],
+    },
+    rating: {
+      type: Number,
+      required: [true, "Rating is required"],
+      min: [0, "Rating cannot be negative"],
     },
     price: {
       type: Number,

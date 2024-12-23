@@ -1,14 +1,13 @@
-import { Document } from "mongoose";
-import { User } from "./user.interface";
+import { User } from "./User";
 
-export interface Book extends Document {
+export interface Book {
+  id: string;
+  coverImage: string;
   user: User;
   title: string;
   author: string;
   description?: string;
-  coverImage: string;
   publicationDate: Date;
-  rating: number;
   genre:
     | "Fiction"
     | "Non-fiction"
@@ -24,4 +23,5 @@ export interface Book extends Document {
   inStock: number;
   price: number;
   quantity: number;
+  rating: number;
 }

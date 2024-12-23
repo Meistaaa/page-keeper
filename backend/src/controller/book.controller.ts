@@ -27,6 +27,8 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
     author,
     description,
     publicationDate,
+    coverImage,
+    rating,
     genre,
     publisher,
     inStock,
@@ -36,19 +38,21 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
   const book = await BookModel.create({
     title,
     author,
+    coverImage,
     description,
     publicationDate,
     genre,
     publisher,
     inStock,
     price,
+    rating,
     quantity,
     user: user._id,
   });
   user.books.push(book._id);
   user.save();
   book.save();
-  const response = ApiResponse(201, { book }, "Book created successfully");
+  const response = ApiResponse(200, { book }, "Book created successfully");
   res.status(response.statusCode).json(response);
 });
 
@@ -56,7 +60,7 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
 
 export const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
   const page = parseInt(req.params.page || "1", 10); // Default to page 1 if not provided
-  const limit = 10;
+  const limit = 8;
   const skip = (page - 1) * limit;
 
   const totalBooks = await BookModel.countDocuments();

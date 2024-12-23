@@ -12,16 +12,16 @@ interface MenuItems {
 }
 const menuItems: MenuItems[] = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "/books", label: "Books" },
-  { to: "/author", label: "Author" },
+  { to: "/your-orders", label: " Orders" },
+  { to: "/books", label: " Books" },
+  { to: "/wishlist", label: "Wishlist" },
   { to: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const location = useLocation();
   return (
-    <nav className="w-full bg-[#5D4B8C] px-4 py-8">
+    <nav className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8">
       {/* FOR SMALL SCREENS  */}
       <div className="md:hidden mx-auto flex max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2 md:hidden">
