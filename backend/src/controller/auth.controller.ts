@@ -61,7 +61,6 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, foundUser.password);
-  console.log(isPasswordCorrect);
   if (!isPasswordCorrect) {
     throw new ApiError(401, "Invalid credentials");
   }
@@ -77,10 +76,15 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
-
+  // remove password from foundUser and send it to the resppnse
+  const { password: _, ...userWithoutPassword } = foundUser.toObject();
   res.cookie("jwt", token, options);
   console.log("Set-Cookie header:", res.getHeader("Set-Cookie"));
-  return res.status(200).json(ApiResponse(200, "User logged in Successfully"));
+  return res
+    .status(200)
+    .json(
+      ApiResponse(200, { userWithoutPassword }, "User logged in Successfully")
+    );
 });
 
 // GET AUTHENTICATED USER
@@ -115,11 +119,10 @@ export const AuthenticatedUser = asyncHandler(
 // LOGOUT
 export const Logout = asyncHandler(async (req: Request, res: Response) => {
   console.log("object");
-  res.cookie("jwt", {
+  res.cookie("jwt", "", {
     httpOnly: true,
     secure: true,
     maxAge: 0,
-    expires: new Date(0),
   });
 
   const response = ApiResponse(200, null, "User logged out successfully");

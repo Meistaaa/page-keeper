@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
+import { User } from "@/types/User";
 
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  // Add other user properties here
+// Define User interface
+
+// Define context value type
+interface UserContextValue {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-const UserContext = React.createContext<User | null>(null);
+// Create the context with the correct type
+const UserContext = createContext<UserContextValue | null>(null);
 
 function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -31,7 +34,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 }
 
 export { UserProvider, UserContext };

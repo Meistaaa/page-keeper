@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { UserContext } from "@/context/UserContext";
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -26,13 +26,19 @@ const menuItems: MenuItems[] = [
 export default function Navbar() {
   const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
-  const user = React.useContext(UserContext);
+  const userContext = useContext(UserContext);
 
+  if (!userContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { user, setUser } = userContext;
   const handleLogout = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URI}/api/auth/logout`,
+        {},
         {
           withCredentials: true,
         }
@@ -40,6 +46,7 @@ export default function Navbar() {
       if (response.status === 200) {
         console.log("object");
         toast.success("User Logged Out Successfully");
+        setUser(null);
       }
     } catch (error) {
       console.log(error);

@@ -18,12 +18,19 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { loginSchema } from "@/validations/auth";
+import { UserContext } from "@/context/UserContext";
 
 const LoginForm = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const navigate = useNavigate();
+  const userContext = React.useContext(UserContext);
 
+  if (!userContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { user, setUser } = userContext;
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,10 +50,13 @@ const LoginForm = () => {
           withCredentials: true,
         }
       );
+      console.log(response.data.data.userWithoutPassword);
       if (response.status === 200) {
         toast.success("Logged in successfully");
+        setUser(response.data.data.userWithoutPassword);
         navigate("/");
       }
+
       //set error here from response
       setError("Unexpected Error");
     } catch (err) {

@@ -1,4 +1,9 @@
+import { Book } from "./Book";
+
 export interface User {
-  name: string;
-  // Add other user properties as needed
+  username: string;
+  email: string;
+  password: string;
+  books?: Book[];
+  cart: Book[];
 }
