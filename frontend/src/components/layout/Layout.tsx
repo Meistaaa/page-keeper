@@ -1,5 +1,6 @@
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { Toaster } from "../ui/toaster";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <NavBar />
 
       <main className="flex-1 ">{children}</main>
-
+      <Toaster />
       <Footer />
     </div>
   );

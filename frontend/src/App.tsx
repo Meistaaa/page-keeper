@@ -6,6 +6,8 @@ import UserPage from "./components/pages/UserPage";
 import AuthenticationLayout from "./components/layout/AuthenticationLayout";
 import { LoginPage } from "./components/pages/LoginPage";
 import { UserProvider } from "./context/UserContext";
+import BooksPage from "./components/pages/BooksPage";
+import BookDetailsPage from "./components/pages/BookDetailsPage";
 
 function App() {
   return (
@@ -29,7 +31,23 @@ function App() {
               </Layout>
             }
           />
+          <Route
+            path="/books"
+            element={
+              <Layout>
+                <BooksPage />
+              </Layout>
+            }
+          />
 
+          <Route
+            path="/books/:bookId"
+            element={
+              <Layout>
+                <BookDetailsPage />
+              </Layout>
+            }
+          ></Route>
           {/* Routes with AuthenticationLayout */}
           <Route
             path="/login"

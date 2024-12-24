@@ -3,7 +3,6 @@ import { asyncHandler } from "../utils/asyncHanlder";
 import { ApiError } from "../utils/ApiError";
 import UserModel from "../models/User";
 import jwt from "jsonwebtoken";
-import { ApiResponse } from "../utils/ApiResponse";
 
 export const authMiddleware = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

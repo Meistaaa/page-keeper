@@ -10,9 +10,7 @@ import { CartValidation } from "../validation/cart.validation";
 export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
   const bookId = req.params.id;
-  console.log(bookId);
   const body = req.body;
-  console.log(body);
   const { quantity } = body;
   const { error } = CartValidation.validate(body);
   if (error) {
@@ -23,7 +21,6 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     );
   }
   const book = await BookModel.findById(bookId);
-  console.log(book);
   if (!book) {
     throw new ApiError(400, "Book not found");
   }
@@ -33,6 +30,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   }
 
   let cart = await Cart.findOne({ user: user._id });
+  console.log(book);
 
   if (!cart) {
     cart = new Cart({
@@ -46,6 +44,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     (item) => item.book.toString() === bookId
   );
 
+  console.log(bookId);
   if (existingItem) {
     existingItem.quantity += quantity;
     existingItem.price = book.price * existingItem.quantity;
@@ -107,6 +106,7 @@ export const removeFromCart = asyncHandler(
 export const updateCart = asyncHandler(async (req: Request, res: Response) => {
   const bookId = req.params.id;
   const { quantity } = req.body;
+  console.log(quantity);
   const user = req["user"];
   const book = await BookModel.findById(bookId);
   if (!book) {

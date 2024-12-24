@@ -50,7 +50,6 @@ const LoginForm = () => {
           withCredentials: true,
         }
       );
-      console.log(response.data.data.userWithoutPassword);
       if (response.status === 200) {
         toast.success("Logged in successfully");
         setUser(response.data.data.userWithoutPassword);

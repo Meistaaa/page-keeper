@@ -21,7 +21,6 @@ const BestSellingBooks = () => {
             withCredentials: true,
           }
         );
-        console.log(response.data.data);
         setBooks(response.data.data.books);
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -2,26 +2,24 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white py-8 w-full">
-      <div className="max-w-screen-xl mx-auto px-4">
-        <div className="flex flex-wrap gap-8 mb-6">
+    <footer className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8 text-white">
+      <div className="flex mx-auto  max-w-7xl items-center justify-center">
+        <div className="flex flex-wrap  mb-6">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">Page Keeper</h1>
           </div>
 
-          <div className="flex-1">
-            <p className="text-sm text-gray-400">
-              Page Keeper is your trusted online bookstore. We offer a wide
-              selection of books across various genres, from fiction to
-              non-fiction, fantasy to mystery, and everything in between.
-              Whether you're a bookworm or a casual reader, Page Keeper has
-              something for everyone.
-            </p>
-          </div>
+          <p className="text-sm ">
+            Page Keeper is your trusted online bookstore. We offer a wide
+            selection of books across various genres, from fiction to
+            non-fiction, fantasy to mystery, and everything in between. Whether
+            you're a bookworm or a casual reader, Page Keeper has something for
+            everyone.
+          </p>
 
           <div>
             <h3 className="text-lg font-semibold mb-2">Our Address</h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm ">
               789 Book Street, Suite 202
               <br />
               City, State, ZIP Code
@@ -33,28 +31,16 @@ export default function Footer() {
 
         <div className="flex flex-wrap justify-between mb-6">
           <div className="flex space-x-6">
-            <Link
-              to="/about"
-              className="text-sm text-gray-400 hover:text-white"
-            >
+            <Link to="/about" className="text-sm  hover:text-white">
               About Us
             </Link>
-            <Link
-              to="/contact"
-              className="text-sm text-gray-400 hover:text-white"
-            >
+            <Link to="/contact" className="text-sm  hover:text-white">
               Contact
             </Link>
-            <Link
-              to="/privacy-policy"
-              className="text-sm text-gray-400 hover:text-white"
-            >
+            <Link to="/privacy-policy" className="text-sm  hover:text-white">
               Privacy Policy
             </Link>
-            <Link
-              to="/terms"
-              className="text-sm text-gray-400 hover:text-white"
-            >
+            <Link to="/terms" className="text-sm  hover:text-white">
               Terms & Conditions
             </Link>
           </div>
@@ -62,7 +48,7 @@ export default function Footer() {
           <div className="flex space-x-4">
             <a
               href="https://facebook.com/pagekeeper"
-              className="text-gray-400 hover:text-white"
+              className=" hover:text-white"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -70,7 +56,7 @@ export default function Footer() {
             </a>
             <a
               href="https://twitter.com/pagekeeper"
-              className="text-gray-400 hover:text-white"
+              className=" hover:text-white"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -78,7 +64,7 @@ export default function Footer() {
             </a>
             <a
               href="https://instagram.com/pagekeeper"
-              className="text-gray-400 hover:text-white"
+              className=" hover:text-white"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -86,7 +72,7 @@ export default function Footer() {
             </a>
             <a
               href="https://linkedin.com/company/pagekeeper"
-              className="text-gray-400 hover:text-white"
+              className=" hover:text-white"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -95,7 +81,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-4 mt-6 text-center text-sm text-gray-400">
+        <div className="border-t  pt-4 mt-6 text-center text-sm ">
           &copy; {new Date().getFullYear()} Page Keeper. All rights reserved.
         </div>
       </div>

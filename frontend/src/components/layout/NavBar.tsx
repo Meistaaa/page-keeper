@@ -3,14 +3,17 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Loader2, Menu } from "lucide-react";
+import { Loader2, Menu, ShoppingCart } from "lucide-react";
 import { UserContext } from "@/context/UserContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { Cart } from "@/types/Cart";
+import { CartCard } from "../Cards/CartCard";
+import { useToast } from "@/hooks/use-toast";
 interface MenuItems {
   to: string;
   label: string;
@@ -27,6 +30,7 @@ export default function Navbar() {
   const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
   const userContext = useContext(UserContext);
+  const { toast } = useToast();
 
   if (!userContext) {
     throw new Error("UpdateUserComponent must be used within a UserProvider");
@@ -45,7 +49,7 @@ export default function Navbar() {
       );
       if (response.status === 200) {
         console.log("object");
-        toast.success("User Logged Out Successfully");
+        toast({ title: "User Logged Out Successfully" });
         setUser(null);
       }
     } catch (error) {
@@ -93,14 +97,17 @@ export default function Navbar() {
           </Link>
         </div>
         {user ? (
-          <Button
-            onClick={handleLogout}
-            className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
-            disabled={loading}
-          >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit
-          </Button>
+          <div className="flex items-center justify-center gap-4">
+            <Button
+              onClick={handleLogout}
+              className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+              disabled={loading}
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Sign Out
+            </Button>
+            <CartSheetTrigger />
+          </div>
         ) : (
           <Link
             to="/login"
@@ -132,14 +139,17 @@ export default function Navbar() {
           ))}
         </div>
         {user ? (
-          <Button
-            onClick={handleLogout}
-            className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
-            disabled={loading}
-          >
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign Out
-          </Button>
+          <div className="flex items-center justify-center gap-4">
+            <Button
+              onClick={handleLogout}
+              className="  rounded-full bg-[#98F9B3] px-4 py-2   text-black hover:bg-[#98F9B3]/90"
+              disabled={loading}
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Sign Out
+            </Button>
+            <CartSheetTrigger />
+          </div>
         ) : (
           <Link
             to="/login"
@@ -152,5 +162,91 @@ export default function Navbar() {
         {/* TODO CART */}
       </div>
     </nav>
+  );
+}
+
+export function CartSheetTrigger() {
+  const [cart, setCart] = useState<Cart | null>(null);
+  const { toast } = useToast();
+  const fetchCart = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URI}/api/cart/get-cart`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        setCart(res.data.data.cart);
+      }
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      toast({
+        title: "Scheduled: Catch up",
+        description: "Friday, February 10, 2023 at 5:57 PM",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const handleUpdateQuantity = async (bookId: string, quantity: number) => {
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URI}/api/cart/update-cart/${bookId}`,
+        { quantity },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (res.status === 200) {
+        await fetchCart();
+        toast({ title: "Cart updated successfully" });
+      } else {
+        throw new Error("Failed to update cart");
+      }
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      toast({ title: "Failed to update cart. Please try again." });
+    }
+  };
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <button
+          className="p-2 rounded-full hover:bg-[#98F9B3]/20"
+          aria-label="Open shopping cart"
+        >
+          <ShoppingCart color="#98F9B3" size={20} />
+        </button>
+      </SheetTrigger>
+      <SheetContent side="right" className="w-full sm:w-[400px] bg-gray-100">
+        <SheetHeader>
+          <SheetTitle>Your Shopping Cart</SheetTitle>
+        </SheetHeader>
+        <div
+          className="mt-6 space-y-4 overflow-y-auto max-h-[calc(100vh-120px)]"
+          role="region"
+          aria-label="Shopping cart items"
+        >
+          {cart?.items?.map((item) => (
+            <CartCard
+              key={item.book._id}
+              item={item}
+              onUpdateQuantity={handleUpdateQuantity}
+            />
+          ))}
+          {(!cart || cart.items.length === 0) && (
+            <p className="text-center text-gray-600" role="status">
+              Your cart is empty
+            </p>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

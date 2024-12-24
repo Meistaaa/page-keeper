@@ -18,7 +18,6 @@ const HomePage = () => {
   const handleCategoryChange = (
     category: (typeof bookCategories)[number] | null
   ) => {
-    // Handle category selection
     console.log("Selected category:", category);
   };
   return (

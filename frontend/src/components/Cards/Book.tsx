@@ -14,9 +14,8 @@ export default function BookCard({
   onAddToCart,
   onCardClick,
 }: BookCardProps) {
-  const { title, author, coverImage, rating, price } = book;
+  const { title, author, coverImage, price } = book;
 
-  console.log(rating);
   return (
     <Card
       onClick={onCardClick}
