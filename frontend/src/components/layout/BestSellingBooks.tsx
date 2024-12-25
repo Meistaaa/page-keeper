@@ -5,13 +5,14 @@ import { Card, CardContent } from "../ui/card";
 import BookCard from "../Cards/Book";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const BestSellingBooks = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { toast } = useToast();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,9 +37,25 @@ const BestSellingBooks = () => {
   const handleNavigateToBook = (id: string) => {
     navigate(`/books/${id}`);
   };
-  const handleAddToCart = (book: Book) => {
-    // Implement cart functionality
-    console.log("Adding to cart:", book.title);
+  const handleAddToCart = async (book: Book) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URI}/api/cart/add-to-cart/${book._id}`,
+        { quantity: 1 },
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        toast({ title: "Added To cart successfully!" });
+      } else {
+        toast({ title: "Failed to add to cart" });
+      }
+      console.log("Adding to cart:", book.title);
+    } catch (error) {
+      console.log(error);
+      toast({ title: "Internal sever error" });
+    }
   };
 
   if (error) {

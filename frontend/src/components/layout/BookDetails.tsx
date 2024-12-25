@@ -4,15 +4,13 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Star } from "lucide-react";
+import { Minus, Plus, Star } from "lucide-react";
 import { Book } from "@/types/Book";
 
 export default function BookDetails({ book }: { book: Book }) {
   const [quantity, setQuantity] = useState(book.quantity);
-
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuantity = parseInt(e.target.value);
-    if (newQuantity >= 1 && newQuantity <= book.inStock) {
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1) {
       setQuantity(newQuantity);
     }
   };
@@ -62,16 +60,34 @@ export default function BookDetails({ book }: { book: Book }) {
           </div>
           <div className="flex  items-center">
             <div className="text-2xl font-bold">${book.price}</div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center mt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleQuantityChange(quantity - 1)}
+                aria-label={`Decrease quantity of ${book.title}`}
+                disabled={quantity <= 1}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
               <Input
                 type="number"
-                min={1}
-                max={book.inStock}
+                min="1"
                 value={quantity}
-                onChange={handleQuantityChange}
-                className="w-20"
+                onChange={(e) =>
+                  handleQuantityChange(parseInt(e.target.value, 10))
+                }
+                className="w-16 mx-2 text-center"
+                aria-label={`Quantity of ${book.title}`}
               />
-              <Button>Add to Cart</Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleQuantityChange(quantity + 1)}
+                aria-label={`Increase quantity of ${book.title}`}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
