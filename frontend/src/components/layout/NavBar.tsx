@@ -8,12 +8,13 @@ import {
 } from "@/components/ui/sheet";
 import { Loader2, Menu, ShoppingCart } from "lucide-react";
 import { UserContext } from "@/context/UserContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Button } from "../ui/button";
-import { Cart } from "@/types/Cart";
+import { CartItem } from "@/types/Cart";
 import { CartCard } from "../Cards/CartCard";
 import { useToast } from "@/hooks/use-toast";
+import { CartContext } from "@/context/CartContext";
 interface MenuItems {
   to: string;
   label: string;
@@ -166,53 +167,13 @@ export default function Navbar() {
 }
 
 export function CartSheetTrigger() {
-  const [cart, setCart] = useState<Cart | null>(null);
-  const { toast } = useToast();
-  const fetchCart = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URI}/api/cart/get-cart`,
-        {
-          withCredentials: true,
-        }
-      );
-      if (res.status === 200) {
-        setCart(res.data.data.cart);
-      }
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      toast({
-        title: "Scheduled: Catch up",
-        description: "Friday, February 10, 2023 at 5:57 PM",
-      });
-    }
-  };
+  const cartContext = useContext(CartContext);
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
+  if (!cartContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
 
-  const handleUpdateQuantity = async (bookId: string, quantity: number) => {
-    try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_API_URI}/api/cart/update-cart/${bookId}`,
-        { quantity },
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (res.status === 200) {
-        await fetchCart();
-        toast({ title: "Cart updated successfully" });
-      } else {
-        throw new Error("Failed to update cart");
-      }
-    } catch (error) {
-      console.error("Error updating cart:", error);
-      toast({ title: "Failed to update cart. Please try again." });
-    }
-  };
+  const { cart, updateQuantity } = cartContext;
 
   return (
     <Sheet>
@@ -233,11 +194,13 @@ export function CartSheetTrigger() {
           role="region"
           aria-label="Shopping cart items"
         >
-          {cart?.items?.map((item) => (
+          {cart?.items?.map((item: CartItem) => (
             <CartCard
               key={item.book._id}
               item={item}
-              onUpdateQuantity={handleUpdateQuantity}
+              onUpdateQuantity={(bookId: string, newQuantity: number) =>
+                updateQuantity(bookId, newQuantity)
+              }
             />
           ))}
           {(!cart || cart.items.length === 0) && (

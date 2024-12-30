@@ -1,18 +1,25 @@
 import { Book } from "@/types/Book";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent } from "../ui/card";
 import BookCard from "../Cards/Book";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { CartContext } from "@/context/CartContext";
 
 const BestSellingBooks = () => {
+  const cartContext = useContext(CartContext);
+
+  if (!cartContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { addToCart } = cartContext;
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,22 +46,9 @@ const BestSellingBooks = () => {
   };
   const handleAddToCart = async (book: Book) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URI}/api/cart/add-to-cart/${book._id}`,
-        { quantity: 1 },
-        {
-          withCredentials: true,
-        }
-      );
-      if (res.status === 200) {
-        toast({ title: "Added To cart successfully!" });
-      } else {
-        toast({ title: "Failed to add to cart" });
-      }
-      console.log("Adding to cart:", book.title);
+      await addToCart(book._id, 1);
     } catch (error) {
-      console.log(error);
-      toast({ title: "Internal sever error" });
+      console.error("Failed to add item to cart:", error);
     }
   };
 
