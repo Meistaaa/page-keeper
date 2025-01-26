@@ -11,10 +11,13 @@ import { asyncHandler } from "../utils/asyncHanlder";
 import { ShippingAddressValidation } from "../validation/order.validation";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
+import BookModel from "../models/Book";
 
 // Create order from cart
 export const createOrder = asyncHandler(async (req: Request, res: Response) => {
-  const { shippingAddress } = req.body;
+  const { shippingAddress, items: orderedItems } = req.body;
+  console.log(orderedItems);
+  // Validate the shipping address
   const { error } = ShippingAddressValidation.validate(shippingAddress);
   if (error) {
     throw new ApiError(
@@ -23,42 +26,105 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       error.details.map((detail) => detail.message)
     );
   }
+
   const user = req["user"];
   const cart = await Cart.findOne({ user: user._id }).populate("items.book");
+
   if (!cart || cart.items.length === 0) {
     throw new ApiError(400, "Cart is empty");
   }
 
-  // Validate stock availability
-  const isValid = await validateOrderItems(cart.items);
-  if (!isValid) {
-    throw new ApiError(400, "Some item are out of stock");
+  // Filter and validate ordered items
+  const validOrderedItems = orderedItems
+    .map((orderItem: { book: any; quantity: number }) => {
+      const bookId = orderItem.book._id;
+      const cartItem = cart.items.find(
+        (item) => item.book._id.toString() === bookId
+      );
+
+      if (!cartItem) {
+        console.error(`Cart item with book ID ${bookId} not found`);
+        return null;
+      }
+
+      if (cartItem.quantity < orderItem.quantity) {
+        console.error(
+          `Insufficient quantity for book ID ${bookId}: CartQuantity=${cartItem.quantity}, Requested=${orderItem.quantity}`
+        );
+        return null;
+      }
+
+      return {
+        book: cartItem.book._id,
+        quantity: orderItem.quantity,
+        price: cartItem.price * orderItem.quantity, // Calculate price for the order
+      };
+    })
+    .filter(Boolean); // Remove invalid items
+
+  if (validOrderedItems.length !== orderedItems.length) {
+    throw new ApiError(
+      400,
+      "Some items in the order are invalid or out of stock"
+    );
   }
 
-  // Create order
+  // Calculate total order price
+  const totalOrderPrice = validOrderedItems.reduce(
+    (total, item) => total + item.price,
+    0
+  );
+
+  // Create the order
   const order = new Order({
     user: user._id,
-    items: cart.items,
-    totalAmount: cart.totalAmount,
+    items: validOrderedItems,
+    totalAmount: totalOrderPrice,
     shippingAddress,
     status: "pending",
     paymentStatus: "pending",
   });
 
   // Update book stock
-  await updateBookStock(cart.items);
+  await updateBookStock(validOrderedItems);
 
-  // Clear cart
-  cart.items = [];
-  cart.totalAmount = 0;
+  // Update cart by removing ordered items or reducing their quantities
+  cart.items = cart.items
+    .map((cartItem) => {
+      const matchedOrderItem = orderedItems.find(
+        (orderItem: { book: any; quantity: number }) =>
+          cartItem.book._id.toString() === orderItem.book._id
+      );
+
+      if (matchedOrderItem) {
+        const remainingQuantity = cartItem.quantity - matchedOrderItem.quantity;
+
+        return remainingQuantity > 0
+          ? { ...cartItem, quantity: remainingQuantity }
+          : null; // Remove item completely if quantity is zero
+      }
+
+      return cartItem;
+    })
+    .filter(Boolean); // Remove null values
+
+  // Recalculate cart total amount
+  cart.totalAmount = cart.items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  // Add the order to the user's orders list
   if (!user.orders.includes(order._id)) {
     user.orders.push(order._id);
   }
+
+  // Save changes
   await Promise.all([order.save(), cart.save(), user.save()]);
-  const response = ApiResponse(200, { order }, "Order created successfully ");
+
+  const response = ApiResponse(200, { order }, "Order created successfully");
   res.status(response.statusCode).json(response);
 });
-
 // Get user's orders
 export const getUserOrders = asyncHandler(
   async (req: Request, res: Response) => {

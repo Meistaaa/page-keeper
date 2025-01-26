@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "react-router-dom";
+import { Book } from "@/types/Book";
+import { useContext } from "react";
+import { CartContext } from "@/context/CartContext";
 
 // Zod schema for validation
 const shippingAddressSchema = z.object({
@@ -30,19 +33,21 @@ const shippingAddressSchema = z.object({
 type ShippingAddressFormData = z.infer<typeof shippingAddressSchema>;
 
 interface CartItem {
-  book: {
-    _id: string;
-    title: string;
-    author: string;
-    coverImage: string;
-  };
+  book: Book;
   quantity: number;
 }
 
 const OrderForm = () => {
   const location = useLocation();
-  const { items } = location.state || { items: [] };
+  const cartContext = useContext(CartContext);
 
+  if (!cartContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { fetchCart } = cartContext;
+  const { items } = location.state || { items: [] };
+  console.log(items);
   const { toast } = useToast();
   const {
     register,
@@ -58,6 +63,7 @@ const OrderForm = () => {
         `${import.meta.env.VITE_API_URI}/api/orders/create-order`,
         {
           shippingAddress: data,
+          items,
         },
         {
           withCredentials: true,
@@ -68,6 +74,7 @@ const OrderForm = () => {
           title: "Order created successfully!",
           description: "Your order has been placed.",
         });
+        fetchCart();
       }
     } catch (error: any) {
       console.log(error);
