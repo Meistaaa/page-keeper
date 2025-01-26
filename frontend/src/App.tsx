@@ -9,6 +9,8 @@ import { UserProvider } from "./context/UserContext";
 import BooksPage from "./components/pages/BooksPage";
 import BookDetailsPage from "./components/pages/BookDetailsPage";
 import { CartProvider } from "./context/CartContext";
+import OrderPage from "./components/pages/OrderPage";
+import YourOrders from "./components/pages/YourOrders";
 
 function App() {
   return (
@@ -49,7 +51,23 @@ function App() {
                   <BookDetailsPage />
                 </Layout>
               }
-            ></Route>
+            />
+            <Route
+              path="/your-orders"
+              element={
+                <Layout>
+                  <YourOrders />
+                </Layout>
+              }
+            />
+            <Route
+              path="/order-now"
+              element={
+                <Layout>
+                  <OrderPage />
+                </Layout>
+              }
+            />
             {/* Routes with AuthenticationLayout */}
             <Route
               path="/login"

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sheet,
   SheetContent,
@@ -174,6 +174,25 @@ export function CartSheetTrigger() {
   }
 
   const { cart, updateQuantity } = cartContext;
+  const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
+  const navigate = useNavigate();
+
+  const toggleSelectItem = (item: CartItem) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.some((selected) => selected.book._id === item.book._id)
+        ? prevSelected.filter((selected) => selected.book._id !== item.book._id)
+        : [...prevSelected, item]
+    );
+  };
+
+  const handleOrderNow = () => {
+    if (selectedItems.length > 0) {
+      navigate("/order-now", { state: { items: selectedItems } });
+      setSelectedItems([]);
+    } else {
+      alert("Please select at least one item to order.");
+    }
+  };
 
   return (
     <Sheet>
@@ -201,6 +220,10 @@ export function CartSheetTrigger() {
               onUpdateQuantity={(bookId: string, newQuantity: number) =>
                 updateQuantity(bookId, newQuantity)
               }
+              onSelect={toggleSelectItem}
+              isSelected={selectedItems.some(
+                (selected) => selected.book._id === item.book._id
+              )}
             />
           ))}
           {(!cart || cart.items.length === 0) && (
@@ -208,6 +231,16 @@ export function CartSheetTrigger() {
               Your cart is empty
             </p>
           )}
+        </div>
+        <div className="mt-4">
+          <Button
+            size="lg"
+            variant="default"
+            onClick={handleOrderNow}
+            className="w-full bg-[#98F9B3] text-black hover:bg-[#98F9B3]/90"
+          >
+            Order Now
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

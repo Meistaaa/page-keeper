@@ -62,16 +62,20 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
 // Get user's orders
 export const getUserOrders = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("object");
     const user = req["user"];
+    console.log("object1");
     const orders = await Order.find({ user: user._id })
       .populate("items.book")
       .sort({ createdAt: -1 });
+    console.log("object2");
 
     const response = ApiResponse(
       200,
       { orders },
       "Retrieved Orders successfully "
     );
+    console.log("object2");
     res.status(response.statusCode).json(response);
   }
 );
