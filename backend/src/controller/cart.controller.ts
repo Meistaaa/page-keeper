@@ -56,7 +56,6 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 
-  book.quantity -= quantity;
   if (!user.cart.includes(cart._id)) {
     user.cart.push(cart._id);
   }
