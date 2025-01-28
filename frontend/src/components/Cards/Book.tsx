@@ -5,7 +5,7 @@ import { Book } from "@/types/Book";
 
 interface BookCardProps {
   book: Book;
-  onCardClick: () => void;
+  onCardClick?: () => void;
   onAddToCart: (book: Book) => void;
 }
 

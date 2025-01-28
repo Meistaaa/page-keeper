@@ -76,11 +76,11 @@ const OrderForm = () => {
         });
         fetchCart();
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       toast({
         title: "Order creation failed",
-        description: error.response?.data?.message || "Something went wrong.",
+        description: "Something went wrong.",
         variant: "destructive",
       });
     }

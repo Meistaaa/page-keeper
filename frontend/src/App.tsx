@@ -11,6 +11,7 @@ import BookDetailsPage from "./components/pages/BookDetailsPage";
 import { CartProvider } from "./context/CartContext";
 import OrderPage from "./components/pages/OrderPage";
 import YourOrders from "./components/pages/YourOrders";
+import SearchResultsPage from "./components/pages/SearchResultsPage";
 
 function App() {
   return (
@@ -65,6 +66,15 @@ function App() {
               element={
                 <Layout>
                   <OrderPage />
+                </Layout>
+              }
+            />
+            {/* Add the SearchResultsPage route */}
+            <Route
+              path="/search"
+              element={
+                <Layout>
+                  <SearchResultsPage />
                 </Layout>
               }
             />

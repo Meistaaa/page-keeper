@@ -19,12 +19,19 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { loginSchema } from "@/validations/auth";
 import { UserContext } from "@/context/UserContext";
+import { CartContext } from "@/context/CartContext";
 
 const LoginForm = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const navigate = useNavigate();
   const userContext = React.useContext(UserContext);
+  const cartContext = React.useContext(CartContext);
+  if (!cartContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { fetchCart } = cartContext;
 
   if (!userContext) {
     throw new Error("UpdateUserComponent must be used within a UserProvider");
@@ -54,6 +61,7 @@ const LoginForm = () => {
         toast.success("Logged in successfully");
         setUser(response.data.data.userWithoutPassword);
         navigate("/");
+        fetchCart();
       }
 
       //set error here from response

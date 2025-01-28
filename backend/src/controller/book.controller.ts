@@ -163,6 +163,45 @@ export const updateBook = asyncHandler(async (req: Request, res: Response) => {
   res.status(response.statusCode).json(response);
 });
 
+// SEARCH BOOKS
+export const searchBooks = asyncHandler(async (req: Request, res: Response) => {
+  const { query } = req.query;
+
+  if (!query) {
+    throw new ApiError(400, "Search query is required");
+  }
+
+  const page = parseInt((req.query.page as string) || "1", 10); // Default to page 1 if not provided
+  const limit = 8;
+  const skip = (page - 1) * limit;
+
+  // Perform a case-insensitive search on the title, author, and genre fields
+  const searchQuery = {
+    $or: [
+      { title: { $regex: query, $options: "i" } },
+      { author: { $regex: query, $options: "i" } },
+      { genre: { $regex: query, $options: "i" } },
+    ],
+  };
+
+  const totalBooks = await BookModel.countDocuments(searchQuery);
+  const books = await BookModel.find(searchQuery).skip(skip).limit(limit);
+
+  const response = ApiResponse(
+    200,
+    {
+      books,
+      pagination: {
+        totalBooks,
+        currentPage: page,
+        totalPages: Math.ceil(totalBooks / limit),
+      },
+    },
+    "Books retrieved successfully"
+  );
+
+  res.status(response.statusCode).json(response);
+});
 // DELETE BOOK
 export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
   const user = req["user"];
