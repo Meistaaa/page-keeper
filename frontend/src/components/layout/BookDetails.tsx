@@ -8,10 +8,46 @@ import { Minus, Plus, Star } from "lucide-react";
 import { Book } from "@/types/Book";
 
 export default function BookDetails({ book }: { book: Book }) {
-  const [quantity, setQuantity] = useState(book.quantity);
+  const [quantity, setQuantity] = useState(1);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
   const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity >= 1) {
+    if (newQuantity >= 1 && newQuantity <= book.inStock) {
       setQuantity(newQuantity);
+    }
+  };
+
+  const startContinuousChange = (increment: number) => {
+    // Update once immediately
+    handleQuantityChange(quantity + increment);
+
+    // Start a timeout to trigger continuous change after 1 second
+    const timeout = setTimeout(() => {
+      const id = setInterval(() => {
+        setQuantity((prevQuantity) => {
+          const newQuantity = prevQuantity + increment;
+          return newQuantity >= 1 && newQuantity <= book.inStock
+            ? newQuantity
+            : prevQuantity;
+        });
+      }, 100); // Adjust the interval speed as needed
+      setIntervalId(id);
+    }, 100); // 1-second delay before starting continuous action
+
+    setTimeoutId(timeout);
+  };
+
+  const stopContinuousChange = () => {
+    // Clear the timeout if the button is released before 1 second
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+    }
+    // Clear the interval if it's running
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
     }
   };
 
@@ -22,7 +58,7 @@ export default function BookDetails({ book }: { book: Book }) {
           <img
             src={book.coverImage}
             alt={book.title}
-            className=" h-[300px] object-fit rounded-md shadow-md"
+            className="h-[300px] object-fit rounded-md shadow-md"
           />
         </div>
         <div className="space-y-4">
@@ -58,13 +94,15 @@ export default function BookDetails({ book }: { book: Book }) {
             ))}
             <span className="ml-2">{book.rating}</span>
           </div>
-          <div className="flex  items-center">
+          <div className="flex items-center">
             <div className="text-2xl font-bold">${book.price}</div>
             <div className="flex items-center mt-2">
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleQuantityChange(quantity - 1)}
+                onMouseDown={() => startContinuousChange(-1)}
+                onMouseUp={stopContinuousChange}
+                onMouseLeave={stopContinuousChange}
                 aria-label={`Decrease quantity of ${book.title}`}
                 disabled={quantity <= 1}
               >
@@ -73,17 +111,20 @@ export default function BookDetails({ book }: { book: Book }) {
               <Input
                 type="number"
                 min="1"
+                max={book.inStock}
                 value={quantity}
                 onChange={(e) =>
                   handleQuantityChange(parseInt(e.target.value, 10))
                 }
-                className="w-16 mx-2 text-center"
+                className="w-16 mx-2 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 aria-label={`Quantity of ${book.title}`}
               />
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleQuantityChange(quantity + 1)}
+                onMouseDown={() => startContinuousChange(1)}
+                onMouseUp={stopContinuousChange}
+                onMouseLeave={stopContinuousChange}
                 aria-label={`Increase quantity of ${book.title}`}
               >
                 <Plus className="h-4 w-4" />

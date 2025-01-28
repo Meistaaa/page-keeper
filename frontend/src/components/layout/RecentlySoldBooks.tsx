@@ -7,7 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
 
-const RelatedBooks = () => {
+const RecentlySoldBooks = () => {
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
@@ -24,13 +24,13 @@ const RelatedBooks = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URI}/api/books/related-books`,
+          `${import.meta.env.VITE_API_URI}/api/books/recently-ordered-books`,
           {
             withCredentials: true,
           }
         );
-        console.log(response.data.data);
-        setBooks(response.data.data.bestSellingBooks);
+
+        setBooks(response.data.data.recentlySoldBooks);
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -64,7 +64,7 @@ const RelatedBooks = () => {
     <div className="my-16 space-y-12">
       <div className="flex justify-between items-center max-w-7xl  mx-auto">
         <h1 className="text-3xl font-bold">
-          Bestselling books
+          Recently Sold books
           <span role="img" aria-label="fire" className="ml-2">
             🔥
           </span>
@@ -104,4 +104,4 @@ const RelatedBooks = () => {
   );
 };
 
-export default RelatedBooks;
+export default RecentlySoldBooks;

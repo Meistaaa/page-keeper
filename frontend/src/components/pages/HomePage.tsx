@@ -1,6 +1,8 @@
 import Category, { BookCategory } from "../Cards/Categories";
 import BestSellingBooks from "../layout/BestSellingBooks";
 import Hero from "../layout/Hero";
+import RecentlySoldBooks from "../layout/RecentlySoldBooks";
+import TrendingBooks from "../layout/TrendingBooks";
 
 const bookCategories: BookCategory[] = [
   "Fiction",
@@ -29,6 +31,8 @@ const HomePage = () => {
           onCategoryChange={handleCategoryChange}
         />
         <BestSellingBooks />
+        <TrendingBooks />
+        <RecentlySoldBooks />
       </main>
     </div>
   );

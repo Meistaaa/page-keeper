@@ -44,7 +44,6 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     (item) => item.book.toString() === bookId
   );
 
-  console.log(bookId);
   if (existingItem) {
     existingItem.quantity += quantity;
     existingItem.price = book.price * existingItem.quantity;
@@ -132,8 +131,6 @@ export const updateCart = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(400, "Insufficient stock ");
   }
 
-  // Update book stock
-  book.quantity -= quantityDifference; // Will add stock if quantityDifference is negative
   await book.save();
 
   // Update cart item

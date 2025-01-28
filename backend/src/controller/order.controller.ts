@@ -4,7 +4,7 @@ import { Cart } from "../models/Cart";
 import {
   validateOrderItems,
   calculateOrderTotal,
-  updateBookStock,
+  updateBookStockAndTrackSales,
   restoreBookStock,
 } from "../utils/order.utils";
 import { asyncHandler } from "../utils/asyncHanlder";
@@ -17,6 +17,7 @@ import BookModel from "../models/Book";
 export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const { shippingAddress, items: orderedItems } = req.body;
   console.log(orderedItems);
+
   // Validate the shipping address
   const { error } = ShippingAddressValidation.validate(shippingAddress);
   if (error) {
@@ -57,10 +58,10 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       return {
         book: cartItem.book._id,
         quantity: orderItem.quantity,
-        price: cartItem.price * orderItem.quantity, // Calculate price for the order
+        price: cartItem.price * orderItem.quantity,
       };
     })
-    .filter(Boolean); // Remove invalid items
+    .filter(Boolean);
 
   if (validOrderedItems.length !== orderedItems.length) {
     throw new ApiError(
@@ -85,8 +86,8 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
     paymentStatus: "pending",
   });
 
-  // Update book stock
-  await updateBookStock(validOrderedItems);
+  // Update book stock and track sales
+  await updateBookStockAndTrackSales(validOrderedItems);
 
   // Update cart by removing ordered items or reducing their quantities
   cart.items = cart.items
@@ -98,15 +99,14 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
 
       if (matchedOrderItem) {
         const remainingQuantity = cartItem.quantity - matchedOrderItem.quantity;
-
         return remainingQuantity > 0
           ? { ...cartItem, quantity: remainingQuantity }
-          : null; // Remove item completely if quantity is zero
+          : null;
       }
 
       return cartItem;
     })
-    .filter(Boolean); // Remove null values
+    .filter(Boolean);
 
   // Recalculate cart total amount
   cart.totalAmount = cart.items.reduce(
