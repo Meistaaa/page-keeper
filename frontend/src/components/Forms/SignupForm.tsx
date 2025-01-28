@@ -17,16 +17,17 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { loginSchema } from "@/validations/auth";
+import { signupSchema } from "@/validations/auth";
 import { UserContext } from "@/context/UserContext";
 import { CartContext } from "@/context/CartContext";
 
-const LoginForm = () => {
+const SignupForm = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const navigate = useNavigate();
   const userContext = React.useContext(UserContext);
   const cartContext = React.useContext(CartContext);
+
   if (!cartContext) {
     throw new Error("UpdateUserComponent must be used within a UserProvider");
   }
@@ -38,39 +39,41 @@ const LoginForm = () => {
   }
 
   const { setUser } = userContext;
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
-      email: "test@gmail.com",
-      password: "123456",
+      username: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     setLoading(true);
     try {
-      setLoading(true);
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URI}/api/auth/login`,
+        `${import.meta.env.VITE_API_URI}/api/auth/register`,
         data,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-      if (response.status === 200) {
-        toast.success("Logged in successfully");
-        setUser(response.data.data.userWithoutPassword);
+      console.log(response.data.data);
+      if (response.status === 201) {
+        toast.success("Account created successfully");
+        setUser(response.data.data);
         navigate("/");
         fetchCart();
+        form.reset();
       }
-
-      //set error here from response
-      setError("Unexpected Error");
     } catch (err) {
-      console.log("Internal server error", err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred");
+      }
     } finally {
       setLoading(false);
-      form.reset();
     }
   };
 
@@ -85,6 +88,19 @@ const LoginForm = () => {
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="email"
@@ -111,6 +127,19 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="*********" {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button
             disabled={loading}
             type="submit"
@@ -125,4 +154,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;

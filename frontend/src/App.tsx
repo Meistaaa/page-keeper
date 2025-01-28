@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import SignupPage from "./components/pages/SignUpPage";
 import HomePage from "./components/pages/HomePage";
 import UserPage from "./components/pages/UserPage";
 import AuthenticationLayout from "./components/layout/AuthenticationLayout";
@@ -12,6 +11,7 @@ import { CartProvider } from "./context/CartContext";
 import OrderPage from "./components/pages/OrderPage";
 import YourOrders from "./components/pages/YourOrders";
 import SearchResultsPage from "./components/pages/SearchResultsPage";
+import SignupPage from "./components/pages/SignUpPage";
 
 function App() {
   return (

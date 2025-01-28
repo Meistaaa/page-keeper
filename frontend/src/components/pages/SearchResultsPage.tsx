@@ -29,8 +29,7 @@ export default function SearchResultsPage() {
               import.meta.env.VITE_API_URI
             }/api/books/search?query=${encodeURIComponent(query)}`
           );
-          console.log(response.data.data.books);
-          const data = response.data.data.books; // Axios automatically parses JSON
+          const data = response.data.data.books;
           setBooks(data);
         } catch (error) {
           console.error("Error fetching search results:", error);
