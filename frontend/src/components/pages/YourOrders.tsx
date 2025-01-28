@@ -36,6 +36,7 @@ const YourOrders = () => {
         console.log("response", response.data.data.orders);
         setOrders(response.data.data.orders);
       } catch (err) {
+        console.log(err);
         setError("Failed to fetch orders. Please try again.");
       } finally {
         setLoading(false);

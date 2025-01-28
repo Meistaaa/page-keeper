@@ -12,6 +12,7 @@ import OrderPage from "./components/pages/OrderPage";
 import YourOrders from "./components/pages/YourOrders";
 import SearchResultsPage from "./components/pages/SearchResultsPage";
 import SignupPage from "./components/pages/SignUpPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -31,9 +32,11 @@ function App() {
             <Route
               path="/user"
               element={
-                <Layout>
-                  <UserPage />
-                </Layout>
+                <ProtectedRoute>
+                  <Layout>
+                    <UserPage />
+                  </Layout>
+                </ProtectedRoute>
               }
             />
             <Route
@@ -56,17 +59,21 @@ function App() {
             <Route
               path="/your-orders"
               element={
-                <Layout>
-                  <YourOrders />
-                </Layout>
+                <ProtectedRoute>
+                  <Layout>
+                    <YourOrders />
+                  </Layout>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/order-now"
               element={
-                <Layout>
-                  <OrderPage />
-                </Layout>
+                <ProtectedRoute>
+                  <Layout>
+                    <OrderPage />
+                  </Layout>
+                </ProtectedRoute>
               }
             />
             {/* Add the SearchResultsPage route */}
