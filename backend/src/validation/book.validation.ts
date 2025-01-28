@@ -11,7 +11,6 @@ const genres = [
   "Self-help",
   "Other",
 ];
-
 export const BookValidation = Joi.object().keys({
   title: Joi.string().required(),
   author: Joi.string().required(),
@@ -26,4 +25,7 @@ export const BookValidation = Joi.object().keys({
   price: Joi.number().precision(2).min(0).required(),
   quantity: Joi.number().integer().min(0).required(),
   rating: Joi.number().integer().min(0).required(),
+  views: Joi.number().integer().min(0).required(),
+  lastViewed: Joi.date().iso().allow(null),
+  lastSoldAt: Joi.date().iso().allow(null),
 });

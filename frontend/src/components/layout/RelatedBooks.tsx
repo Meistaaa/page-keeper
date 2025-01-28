@@ -7,7 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
 
-const BestSellingBooks = () => {
+const RelatedBooks = () => {
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
@@ -104,4 +104,4 @@ const BestSellingBooks = () => {
   );
 };
 
-export default BestSellingBooks;
+export default RelatedBooks;

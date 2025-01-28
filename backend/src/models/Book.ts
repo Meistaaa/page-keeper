@@ -43,7 +43,6 @@ const bookSchema = new Schema<Book>(
         "Other",
       ],
     },
-
     publisher: {
       type: String,
       required: false,
@@ -74,11 +73,28 @@ const bookSchema = new Schema<Book>(
       required: [true, "Price is required"],
       min: [0, "Price cannot be negative"],
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    lastViewed: {
+      type: Date,
+      default: Date.now,
+    },
+    lastSoldAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+// Add index for better query performance
+bookSchema.index({ genre: 1, rating: -1 });
+bookSchema.index({ views: -1, lastViewed: -1 });
+bookSchema.index({ lastSoldAt: -1 });
 
 const BookModel =
   (mongoose.models.Book as mongoose.Model<Book>) ||

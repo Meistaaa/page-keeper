@@ -24,4 +24,7 @@ export interface Book extends Document {
   inStock: number;
   price: number;
   quantity: number;
+  views: number;
+  lastViewed: Date;
+  lastSoldAt: Date | null;
 }

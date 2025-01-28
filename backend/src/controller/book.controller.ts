@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 
 export const createBook = asyncHandler(async (req: Request, res: Response) => {
   const body = req.body;
+  console.log(body);
   const { error } = BookValidation.validate(body);
   const user = req["user"];
 
@@ -110,15 +111,22 @@ export const getUserBooks = asyncHandler(
     res.status(response.statusCode).json(response);
   }
 );
-// GET A SINGLE BOOK
 
+// GET A SINGLE BOOK
 export const getBookById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new ApiError(400, "Invalid book ID");
   }
-  console.log(id);
-  const book = await BookModel.findById(id);
+
+  const book = await BookModel.findByIdAndUpdate(
+    id,
+    {
+      $inc: { views: 1 },
+      lastViewed: new Date(),
+    },
+    { new: true }
+  );
 
   if (!book) {
     throw new ApiError(404, "Book not found");
@@ -170,12 +178,9 @@ export const searchBooks = asyncHandler(async (req: Request, res: Response) => {
   if (!query) {
     throw new ApiError(400, "Search query is required");
   }
-
-  const page = parseInt((req.query.page as string) || "1", 10); // Default to page 1 if not provided
+  const page = parseInt((req.query.page as string) || "1", 10);
   const limit = 8;
   const skip = (page - 1) * limit;
-
-  // Perform a case-insensitive search on the title, author, and genre fields
   const searchQuery = {
     $or: [
       { title: { $regex: query, $options: "i" } },
@@ -219,3 +224,140 @@ export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
   const response = ApiResponse(200, null, "Book deleted successfully");
   res.status(response.statusCode).json(response);
 });
+
+// GET TRENDING BOOKS
+export const getTrendingBooks = asyncHandler(
+  async (req: Request, res: Response) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const trendingBooks = await BookModel.find({
+      lastViewed: { $gte: thirtyDaysAgo },
+    })
+      .sort({ views: -1, rating: -1 })
+      .limit(10);
+
+    const response = ApiResponse(
+      200,
+      { trendingBooks },
+      "Trending books retrieved successfully"
+    );
+    res.status(response.statusCode).json(response);
+  }
+);
+
+// GET RELATED BOOKS
+export const getRelatedBooks = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, "Invalid book ID");
+    }
+
+    const book = await BookModel.findById(id);
+    if (!book) {
+      throw new ApiError(404, "Book not found");
+    }
+
+    const relatedBooks = await BookModel.find({
+      _id: { $ne: id },
+      genre: book.genre,
+    })
+      .sort({ rating: -1 })
+      .limit(6);
+
+    const response = ApiResponse(
+      200,
+      { relatedBooks },
+      "Related books retrieved successfully"
+    );
+    res.status(response.statusCode).json(response);
+  }
+);
+
+// GET BEST SELLING BOOKS
+export const getBestSellingBooks = asyncHandler(
+  async (req: Request, res: Response) => {
+    const page = parseInt((req.query.page as string) || "1", 10);
+    const limit = parseInt((req.query.limit as string) || "10", 10);
+    const skip = (page - 1) * limit;
+
+    const totalBooks = await BookModel.countDocuments();
+
+    // Find books with highest sales (lowest inStock compared to initial quantity)
+    const bestSellingBooks = await BookModel.aggregate([
+      {
+        $addFields: {
+          soldQuantity: { $subtract: ["$quantity", "$inStock"] },
+        },
+      },
+      {
+        $sort: {
+          soldQuantity: -1,
+          rating: -1, // Secondary sort by rating
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+    ]);
+
+    const response = ApiResponse(
+      200,
+      {
+        bestSellingBooks,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalBooks / limit),
+          totalBooks,
+          limit,
+        },
+      },
+      "Best selling books retrieved successfully"
+    );
+    res.status(response.statusCode).json(response);
+  }
+);
+
+// GET RECENTLY SOLD BOOKS
+export const getRecentlySoldBooks = asyncHandler(
+  async (req: Request, res: Response) => {
+    const page = parseInt((req.query.page as string) || "1", 10);
+    const limit = parseInt((req.query.limit as string) || "10", 10);
+    const skip = (page - 1) * limit;
+
+    // Get books sold in the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const query = {
+      lastSoldAt: { $gte: sevenDaysAgo, $ne: null },
+    };
+
+    const totalBooks = await BookModel.countDocuments(query);
+
+    const recentlySoldBooks = await BookModel.find(query)
+      .sort({ lastSoldAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const response = ApiResponse(
+      200,
+      {
+        recentlySoldBooks,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalBooks / limit),
+          totalBooks,
+          limit,
+        },
+      },
+      "Recently sold books retrieved successfully"
+    );
+    res.status(response.statusCode).json(response);
+  }
+);
