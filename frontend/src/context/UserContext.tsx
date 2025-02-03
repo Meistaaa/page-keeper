@@ -2,32 +2,34 @@ import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
 import { User } from "@/types/User";
 
-// Define User interface
-
 // Define context value type
 interface UserContextValue {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  loading: boolean;
 }
 
-// Create the context with the correct type
+// Create the context
 const UserContext = createContext<UserContextValue | null>(null);
 
 function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // Track loading state
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URI}/api/auth/me`,
-          { withCredentials: true }
+          { withCredentials: true } // Ensures cookies are sent
         );
-        console.log(response.data);
-        setUser(response.data.data.user);
+        const fetchedUser = response.data.data.user;
+        setUser(fetchedUser);
       } catch (error) {
         console.error("Error fetching user:", error);
-        // Handle error gracefully (e.g., show error message)
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,7 +37,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

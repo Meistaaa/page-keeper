@@ -1,20 +1,17 @@
-import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "@/context/UserContext";
+import { Navigate } from "react-router-dom";
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const context = useContext(UserContext);
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const userContext = useContext(UserContext);
+  if (!context) return null; // Handle missing context edge case
 
-  if (!userContext?.user) {
-    // Redirect to /login if the user is not authenticated
-    return <Navigate to="/login" replace />;
-  }
+  const { user, loading } = context;
 
-  return <>{children}</>;
+  if (loading) return <div>Loading...</div>; // Prevent premature redirects
+
+  return user ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
