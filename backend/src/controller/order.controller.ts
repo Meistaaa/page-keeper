@@ -58,7 +58,7 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       return {
         book: cartItem.book._id,
         quantity: orderItem.quantity,
-        price: cartItem.price * orderItem.quantity,
+        price: cartItem.price,
       };
     })
     .filter(Boolean);
