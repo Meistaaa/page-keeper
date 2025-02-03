@@ -13,6 +13,7 @@ import YourOrders from "./components/pages/YourOrders";
 import SearchResultsPage from "./components/pages/SearchResultsPage";
 import SignupPage from "./components/pages/SignUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import TrendingBooksPage from "./components/pages/TrendingBooksPage";
 
 function App() {
   return (
@@ -26,6 +27,15 @@ function App() {
               element={
                 <Layout>
                   <HomePage />
+                </Layout>
+              }
+            />
+            {/* Routes with Layout */}
+            <Route
+              path="/books/trending-books"
+              element={
+                <Layout>
+                  <TrendingBooksPage />
                 </Layout>
               }
             />

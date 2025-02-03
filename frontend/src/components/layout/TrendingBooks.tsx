@@ -24,7 +24,9 @@ const TrendingBooks = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URI}/api/books/get-trending-books`,
+          `${
+            import.meta.env.VITE_API_URI
+          }/api/books/get-trending-books?page=1&limit=3`,
           {
             withCredentials: true,
           }
@@ -70,7 +72,7 @@ const TrendingBooks = () => {
           </span>
         </h1>
         <a
-          href="/books"
+          href="/books/trending-books"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

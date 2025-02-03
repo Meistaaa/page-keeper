@@ -231,17 +231,32 @@ export const getTrendingBooks = asyncHandler(
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalBooks = await BookModel.countDocuments({
+      lastViewed: { $gte: thirtyDaysAgo },
+    });
+
     const trendingBooks = await BookModel.find({
       lastViewed: { $gte: thirtyDaysAgo },
     })
       .sort({ views: -1, rating: -1 })
-      .limit(10);
-
+      .skip(skip)
+      .limit(limit);
+    console.log(trendingBooks);
     const response = ApiResponse(
       200,
-      { trendingBooks },
+      {
+        trendingBooks,
+        currentPage: page,
+        totalPages: Math.ceil(totalBooks / limit),
+        totalBooks,
+      },
       "Trending books retrieved successfully"
     );
+
     res.status(response.statusCode).json(response);
   }
 );
