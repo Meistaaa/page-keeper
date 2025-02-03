@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { Book } from "@/types/Book";
 import { CartContext } from "@/context/CartContext";
+import RelatedBooks from "./RelatedBooks";
 
 export default function BookDetails({ book }: { book: Book }) {
   const [quantity, setQuantity] = useState(1);
@@ -69,7 +70,7 @@ export default function BookDetails({ book }: { book: Book }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-16">
+    <div className="w-full max-w-7xl mx-auto py-16 flex flex-col gap-12">
       <div className="flex gap-8">
         <div>
           <img
@@ -160,6 +161,7 @@ export default function BookDetails({ book }: { book: Book }) {
           </Button>
         </div>
       </div>
+      <RelatedBooks id={book._id}></RelatedBooks>
     </div>
   );
 }

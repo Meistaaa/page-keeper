@@ -265,12 +265,15 @@ export const getTrendingBooks = asyncHandler(
 export const getRelatedBooks = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new ApiError(400, "Invalid book ID");
     }
 
+    console.log(id);
+
     const book = await BookModel.findById(id);
+    console.log(book);
+
     if (!book) {
       throw new ApiError(404, "Book not found");
     }

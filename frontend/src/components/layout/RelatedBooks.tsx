@@ -7,7 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
 
-const RelatedBooks = () => {
+const RelatedBooks = ({ id }: { id: string }) => {
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
@@ -23,14 +23,14 @@ const RelatedBooks = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(id);
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URI}/api/books/related-books`,
+          `${import.meta.env.VITE_API_URI}/api/books/get-related-books/${id}`,
           {
             withCredentials: true,
           }
         );
-        console.log(response.data.data);
-        setBooks(response.data.data.bestSellingBooks);
+        setBooks(response.data.data.relatedBooks);
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -64,18 +64,11 @@ const RelatedBooks = () => {
     <div className="my-16 space-y-12">
       <div className="flex justify-between items-center max-w-7xl  mx-auto">
         <h1 className="text-3xl font-bold">
-          Bestselling books
+          Related books
           <span role="img" aria-label="fire" className="ml-2">
             🔥
           </span>
         </h1>
-        <a
-          href="/books"
-          className="text-primary hover:underline inline-flex items-center"
-        >
-          View All
-          <span className="ml-1">→</span>
-        </a>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12  max-w-7xl  mx-auto">
