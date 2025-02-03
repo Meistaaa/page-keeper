@@ -10,11 +10,9 @@ interface CartContextType {
   addToCart: (bookId: string, quantity?: number) => Promise<void>;
 }
 
-export const CartContext = createContext<CartContextType | undefined>(
-  undefined
-);
+const CartContext = createContext<CartContextType | null>(null);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
+function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const { toast } = useToast();
   const fetchCart = async () => {
@@ -41,7 +39,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         { withCredentials: true }
       );
       if (res.status === 200) {
-        await fetchCart();
+        fetchCart();
         toast({ title: "Updated cart successfully!" });
       } else {
         throw new Error("Failed to update cart");
@@ -85,4 +83,5 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </CartContext.Provider>
   );
-};
+}
+export { CartProvider, CartContext };
