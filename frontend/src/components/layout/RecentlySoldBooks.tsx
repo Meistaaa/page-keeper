@@ -24,7 +24,9 @@ const RecentlySoldBooks = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URI}/api/books/recently-ordered-books`,
+          `${
+            import.meta.env.VITE_API_URI
+          }/api/books/recently-ordered-books?page=1&limit=4`,
           {
             withCredentials: true,
           }
@@ -70,7 +72,7 @@ const RecentlySoldBooks = () => {
           </span>
         </h1>
         <a
-          href="/books"
+          href="/books/recently-sold-books?page=1&limit=2"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

@@ -72,7 +72,7 @@ const TrendingBooks = () => {
           </span>
         </h1>
         <a
-          href="/books/trending-books"
+          href="/books/trending-books?page=1"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

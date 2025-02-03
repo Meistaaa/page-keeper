@@ -6,7 +6,7 @@ import { Book } from "@/types/Book";
 import BookCard from "../Cards/Book";
 import { CartContext } from "@/context/CartContext";
 
-export default function TrendingBooksPage() {
+export default function RecentlySoldBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -16,7 +16,7 @@ export default function TrendingBooksPage() {
 
   const cartContext = useContext(CartContext);
   if (!cartContext) {
-    throw new Error("TrendingBooksPage must be used within a CartProvider");
+    throw new Error("RecentlySoldBooksPage must be used within a CartProvider");
   }
 
   const { addToCart } = cartContext;
@@ -30,20 +30,20 @@ export default function TrendingBooksPage() {
   };
 
   useEffect(() => {
-    fetchTrendingBooks();
+    fetchRecentlyOrderedBooks();
   }, [page]);
 
-  const fetchTrendingBooks = async () => {
+  const fetchRecentlyOrderedBooks = async () => {
     try {
       const res = await axios.get(
         `${
           import.meta.env.VITE_API_URI
-        }/api/books/get-trending-books?page=${page}&limit=2`,
+        }/api/books/recently-ordered-books?page=${page}&limit=2`,
         {
           withCredentials: true,
         }
       );
-      setBooks(res.data.data.trendingBooks);
+      setBooks(res.data.data.recentlySoldBooks);
       setTotalPages(res.data.totalPages);
     } catch (error) {
       console.error("Error fetching trending books:", error);
@@ -51,7 +51,7 @@ export default function TrendingBooksPage() {
   };
 
   const handlePageChange = (newPage: number) => {
-    navigate(`/books/trending-books?page=${newPage}`);
+    navigate(`/books/recently-sold-books?page=${newPage}`);
   };
 
   return (
