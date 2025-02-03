@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { format } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Minus, Plus, Star } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { Book } from "@/types/Book";
+import { CartContext } from "@/context/CartContext";
 
 export default function BookDetails({ book }: { book: Book }) {
   const [quantity, setQuantity] = useState(1);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  const cartContext = useContext(CartContext);
+
+  if (!cartContext) {
+    throw new Error("UpdateUserComponent must be used within a UserProvider");
+  }
+
+  const { addToCart } = cartContext;
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity >= 1 && newQuantity <= book.inStock) {
@@ -38,6 +47,14 @@ export default function BookDetails({ book }: { book: Book }) {
     setTimeoutId(timeout);
   };
 
+  const handleAddToCart = async (book: Book) => {
+    try {
+      await addToCart(book._id, quantity);
+      setQuantity(1);
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+    }
+  };
   const stopContinuousChange = () => {
     // Clear the timeout if the button is released before 1 second
     if (timeoutId) {
@@ -131,6 +148,16 @@ export default function BookDetails({ book }: { book: Book }) {
               </Button>
             </div>
           </div>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToCart(book);
+            }}
+            className="w-full bg-[#5D4B8C] text-white"
+            variant="outline"
+          >
+            <ShoppingCart /> Add To Cart
+          </Button>
         </div>
       </div>
     </div>
