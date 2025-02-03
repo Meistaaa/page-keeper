@@ -11,6 +11,7 @@ import {
   getBestSellingBooks,
   getTrendingBooks,
   getRecentlySoldBooks,
+  getBooksByGenre,
 } from "../controller/book.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 
@@ -26,6 +27,7 @@ router.get("/get-related-books/:id", getRelatedBooks);
 router.get("/get-best-selling-books", getBestSellingBooks);
 router.get("/get-trending-books", getTrendingBooks);
 router.get("/recently-ordered-books", getRecentlySoldBooks);
+router.get("/get-books-by-genre", getBooksByGenre);
 router.get("/search", searchBooks);
 
 export default router;

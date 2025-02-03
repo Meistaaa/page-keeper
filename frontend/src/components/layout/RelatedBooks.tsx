@@ -23,7 +23,6 @@ const RelatedBooks = ({ id }: { id: string }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(id);
         const response = await axios.get(
           `${import.meta.env.VITE_API_URI}/api/books/get-related-books/${id}`,
           {
@@ -41,7 +40,7 @@ const RelatedBooks = ({ id }: { id: string }) => {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
   const handleNavigateToBook = (id: string) => {
     navigate(`/books/${id}`);
   };

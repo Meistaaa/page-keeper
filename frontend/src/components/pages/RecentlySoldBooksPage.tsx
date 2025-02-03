@@ -30,25 +30,24 @@ export default function RecentlySoldBooksPage() {
   };
 
   useEffect(() => {
+    const fetchRecentlyOrderedBooks = async () => {
+      try {
+        const res = await axios.get(
+          `${
+            import.meta.env.VITE_API_URI
+          }/api/books/recently-ordered-books?page=${page}&limit=2`,
+          {
+            withCredentials: true,
+          }
+        );
+        setBooks(res.data.data.recentlySoldBooks);
+        setTotalPages(res.data.totalPages);
+      } catch (error) {
+        console.error("Error fetching trending books:", error);
+      }
+    };
     fetchRecentlyOrderedBooks();
   }, [page]);
-
-  const fetchRecentlyOrderedBooks = async () => {
-    try {
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_API_URI
-        }/api/books/recently-ordered-books?page=${page}&limit=2`,
-        {
-          withCredentials: true,
-        }
-      );
-      setBooks(res.data.data.recentlySoldBooks);
-      setTotalPages(res.data.totalPages);
-    } catch (error) {
-      console.error("Error fetching trending books:", error);
-    }
-  };
 
   const handlePageChange = (newPage: number) => {
     navigate(`/books/recently-sold-books?page=${newPage}`);

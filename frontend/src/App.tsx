@@ -15,6 +15,7 @@ import SignupPage from "./components/pages/SignUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TrendingBooksPage from "./components/pages/TrendingBooksPage";
 import RecentlySoldBooksPage from "./components/pages/RecentlySoldBooksPage";
+import BooksByGenre from "./components/pages/BooksByGenre";
 
 function App() {
   return (
@@ -45,6 +46,14 @@ function App() {
               element={
                 <Layout>
                   <RecentlySoldBooksPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/books/genres"
+              element={
+                <Layout>
+                  <BooksByGenre />
                 </Layout>
               }
             />

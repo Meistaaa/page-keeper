@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -14,35 +14,44 @@ export type BookCategory =
   | "Self-help"
   | "Other";
 
-interface CategoryProps {
-  categories: BookCategory[];
-  onCategoryChange: (category: BookCategory | null) => void;
-}
+export default function Category() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-export default function Category({
-  categories,
-  onCategoryChange,
-}: CategoryProps) {
-  const [selectedCategory, setSelectedCategory] = useState<BookCategory | null>(
-    null
-  );
+  // Get the current selected genre from the URL
+  const selectedCategory = searchParams.get("genre") as BookCategory | null;
+
+  // Define book categories inside the component
+  const categories: BookCategory[] = [
+    "Fiction",
+    "Non-fiction",
+    "Science Fiction",
+    "Mystery",
+    "Romance",
+    "Thriller",
+    "Biography",
+    "History",
+    "Self-help",
+    "Other",
+  ];
 
   const handleCategoryClick = (category: BookCategory) => {
+    // If the clicked category is already selected, remove it (toggle off)
     if (selectedCategory === category) {
-      setSelectedCategory(null);
-      onCategoryChange(null);
+      navigate(`/books/genres?page=1&limit=10`);
     } else {
-      setSelectedCategory(category);
-      onCategoryChange(category);
+      navigate(
+        `/books/genres?genre=${encodeURIComponent(category)}&page=1&limit=10`
+      );
     }
   };
 
   return (
-    <div className="my-16  space-y-12">
-      <div className="flex justify-between items-center max-w-7xl  mx-auto">
-        <h1 className="text-3xl font-bold ">Categories</h1>
+    <div className="my-16 space-y-12">
+      <div className="flex justify-between items-center max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold">Categories</h1>
         <a
-          href="/books"
+          href="/books/categories"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All
@@ -50,7 +59,7 @@ export default function Category({
         </a>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-w-7xl mx-auto ">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-w-7xl mx-auto">
         {categories.map((category) => (
           <Button
             key={category}

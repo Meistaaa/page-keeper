@@ -30,25 +30,25 @@ export default function TrendingBooksPage() {
   };
 
   useEffect(() => {
+    const fetchTrendingBooks = async () => {
+      try {
+        const res = await axios.get(
+          `${
+            import.meta.env.VITE_API_URI
+          }/api/books/get-trending-books?page=${page}&limit=2`,
+          {
+            withCredentials: true,
+          }
+        );
+        setBooks(res.data.data.trendingBooks);
+        setTotalPages(res.data.totalPages);
+      } catch (error) {
+        console.error("Error fetching trending books:", error);
+      }
+    };
+
     fetchTrendingBooks();
   }, [page]);
-
-  const fetchTrendingBooks = async () => {
-    try {
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_API_URI
-        }/api/books/get-trending-books?page=${page}&limit=2`,
-        {
-          withCredentials: true,
-        }
-      );
-      setBooks(res.data.data.trendingBooks);
-      setTotalPages(res.data.totalPages);
-    } catch (error) {
-      console.error("Error fetching trending books:", error);
-    }
-  };
 
   const handlePageChange = (newPage: number) => {
     navigate(`/books/trending-books?page=${newPage}`);

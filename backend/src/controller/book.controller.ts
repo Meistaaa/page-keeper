@@ -379,3 +379,36 @@ export const getRecentlySoldBooks = asyncHandler(
     res.status(response.statusCode).json(response);
   }
 );
+
+// GET BOOKS BY GENRE
+export const getBooksByGenre = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { genre } = req.query;
+    const page = parseInt((req.query.page as string) || "1", 10);
+    const limit = parseInt((req.query.limit as string) || "10", 10);
+    const skip = (page - 1) * limit;
+
+    if (!genre) {
+      throw new ApiError(400, "Genre query parameter is required");
+    }
+
+    const totalBooks = await BookModel.countDocuments({ genre });
+
+    const books = await BookModel.find({ genre }).skip(skip).limit(limit);
+
+    const response = ApiResponse(
+      200,
+      {
+        books,
+        pagination: {
+          totalBooks,
+          currentPage: page,
+          totalPages: Math.ceil(totalBooks / limit),
+        },
+      },
+      "Books retrieved successfully by genre"
+    );
+
+    res.status(response.statusCode).json(response);
+  }
+);
