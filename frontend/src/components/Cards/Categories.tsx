@@ -51,7 +51,7 @@ export default function Category() {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold">Categories</h1>
         <a
-          href="/books/categories"
+          href="/books/genres"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

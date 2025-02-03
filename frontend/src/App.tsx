@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TrendingBooksPage from "./components/pages/TrendingBooksPage";
 import RecentlySoldBooksPage from "./components/pages/RecentlySoldBooksPage";
 import BooksByGenre from "./components/pages/BooksByGenre";
+import CartPage from "./components/pages/CartPage";
 
 function App() {
   return (
@@ -58,6 +59,14 @@ function App() {
               }
             />
             <Route
+              path="/cart"
+              element={
+                <Layout>
+                  <CartPage />
+                </Layout>
+              }
+            />
+            <Route
               path="/user"
               element={
                 <ProtectedRoute>
@@ -68,7 +77,7 @@ function App() {
               }
             />
             <Route
-              path="/books"
+              path="/books/all-books"
               element={
                 <Layout>
                   <BooksPage />

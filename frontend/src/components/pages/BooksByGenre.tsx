@@ -58,7 +58,7 @@ const BooksByGenre = () => {
   };
   return (
     <div>
-      <Category></Category>
+      <Category />
       <div className="container mx-auto p-6">
         <h2 className="text-2xl font-bold mb-4">{genre} Books</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -70,7 +70,13 @@ const BooksByGenre = () => {
             />
           ))}
         </div>
-        {books.length === 0 && <div>No Books In This Genre</div>}
+
+        {books.length === 0 && genre !== null && (
+          <div>No Books In This Genre</div>
+        )}
+        {books.length === 0 && genre === null && (
+          <div>Please Select A Genre</div>
+        )}
 
         {/* Pagination Controls */}
         <div className="flex justify-center items-center gap-4 mt-6">

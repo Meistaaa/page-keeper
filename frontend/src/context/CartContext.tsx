@@ -7,6 +7,7 @@ interface CartContextType {
   cart: Cart | null;
   fetchCart: () => Promise<void>;
   updateQuantity: (bookId: string, quantity: number) => Promise<void>;
+  removeFromCart: (bookId: string) => Promise<void>;
   addToCart: (bookId: string, quantity?: number) => Promise<void>;
 }
 
@@ -26,11 +27,28 @@ function CartProvider({ children }: { children: ReactNode }) {
       if (res.status === 200) {
         setCart(res.data.data.cart);
       }
+      console.log(res.data.data);
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
   };
 
+  const removeFromCart = async (bookId: string) => {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_API_URI}/api/cart/remove-book/${bookId}`,
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        fetchCart();
+        toast({ title: "Successfully Removed From cart !" });
+      } else {
+        throw new Error("Failed to Removed From  cart");
+      }
+    } catch (error) {
+      console.error("Error Removing cart:", error);
+    }
+  };
   const updateQuantity = async (bookId: string, quantity: number) => {
     try {
       const res = await axios.put(
@@ -78,7 +96,7 @@ function CartProvider({ children }: { children: ReactNode }) {
   };
   return (
     <CartContext.Provider
-      value={{ cart, fetchCart, updateQuantity, addToCart }}
+      value={{ cart, removeFromCart, fetchCart, updateQuantity, addToCart }}
     >
       {children}
     </CartContext.Provider>

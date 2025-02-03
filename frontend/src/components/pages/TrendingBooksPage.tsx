@@ -40,8 +40,9 @@ export default function TrendingBooksPage() {
             withCredentials: true,
           }
         );
+        console.log(res.data.data);
         setBooks(res.data.data.trendingBooks);
-        setTotalPages(res.data.totalPages);
+        setTotalPages(res.data.data.totalPages);
       } catch (error) {
         console.error("Error fetching trending books:", error);
       }

@@ -60,14 +60,11 @@ export const createBook = asyncHandler(async (req: Request, res: Response) => {
 // GET ALL BOOKS
 
 export const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
-  const page = parseInt(req.params.page || "1", 10); // Default to page 1 if not provided
-  const limit = 8;
+  const page = parseInt((req.query.page as string) || "1", 10);
+  const limit = parseInt((req.query.limit as string) || "10", 10);
   const skip = (page - 1) * limit;
-
   const totalBooks = await BookModel.countDocuments();
-  console.log(totalBooks);
   const books = await BookModel.find().skip(skip).limit(limit);
-  console.log(books);
   const response = ApiResponse(
     200,
     {
