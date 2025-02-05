@@ -24,4 +24,9 @@ export interface Book {
   price: number;
   quantity: number;
   rating: number;
+  views: number;
+  lastViewedAt: Date | null;
+  lastSoldAt: Date | null;
+  updatedAt: Date | null;
+  createdAt: Date | null;
 }

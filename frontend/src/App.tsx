@@ -17,6 +17,10 @@ import TrendingBooksPage from "./components/pages/TrendingBooksPage";
 import RecentlySoldBooksPage from "./components/pages/RecentlySoldBooksPage";
 import BooksByGenre from "./components/pages/BooksByGenre";
 import CartPage from "./components/pages/CartPage";
+import ProtectedDashboardRoute from "./components/ProtectedDashboardRoute";
+import Dashboard from "./components/pages/Dashboard";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import DashBookPage from "./components/dashboard/DashBookPage";
 
 function App() {
   return (
@@ -76,6 +80,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/books/all-books"
               element={
@@ -120,6 +125,27 @@ function App() {
                 <Layout>
                   <SearchResultsPage />
                 </Layout>
+              }
+            />
+            {/* Dashboard Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedDashboardRoute>
+                  <DashboardLayout>
+                    <Dashboard />
+                  </DashboardLayout>
+                </ProtectedDashboardRoute>
+              }
+            />
+            <Route
+              path="/dashboard/books"
+              element={
+                <ProtectedDashboardRoute>
+                  <DashboardLayout>
+                    <DashBookPage />
+                  </DashboardLayout>
+                </ProtectedDashboardRoute>
               }
             />
             {/* Routes with AuthenticationLayout */}

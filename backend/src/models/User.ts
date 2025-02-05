@@ -14,6 +14,10 @@ const UserSchema: Schema<User> = new Schema({
     match: [/.+\@.+\..+/, "Please use a valid email address"],
     unique: true,
   },
+  role: {
+    type: String,
+    default: "customer",
+  },
 
   password: {
     type: String,

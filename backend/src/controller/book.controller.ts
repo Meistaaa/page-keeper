@@ -139,6 +139,7 @@ export const updateBook = asyncHandler(async (req: Request, res: Response) => {
   const { error } = BookValidation.validate(body);
   const user = req["user"];
   if (error) {
+    console.log(body);
     throw new ApiError(
       400,
       "Validation failed",

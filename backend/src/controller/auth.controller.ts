@@ -35,6 +35,7 @@ export const Register = asyncHandler(async (req: Request, res: Response) => {
   const user = await UserModel.create({
     username,
     email,
+    role: "customer",
     password: hashedPassword,
   });
   user.save();
