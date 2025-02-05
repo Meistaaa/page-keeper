@@ -26,7 +26,7 @@ const TrendingBooks = () => {
         const response = await axios.get(
           `${
             import.meta.env.VITE_API_URI
-          }/api/books/get-trending-books?page=1&limit=3`,
+          }/api/books/get-trending-books?page=1&limit=4`,
           {
             withCredentials: true,
           }
