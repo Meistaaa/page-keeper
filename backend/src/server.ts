@@ -6,14 +6,14 @@ import cookieParser from "cookie-parser";
 import { routes } from "./routes/routes";
 
 dotenv.config();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
   })
 );
