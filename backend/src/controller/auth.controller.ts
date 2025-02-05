@@ -70,7 +70,7 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     id: foundUser.id,
   };
   const options = {
-    sameSite: false,
+    sameSite: "none" as const,
     httpOnly: true,
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
