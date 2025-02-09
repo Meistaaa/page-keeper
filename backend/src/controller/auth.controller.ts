@@ -122,6 +122,7 @@ export const AuthenticatedUser = asyncHandler(
 export const Logout = asyncHandler(async (req: Request, res: Response) => {
   console.log("object");
   res.cookie("jwt", "", {
+    sameSite: "none" as const,
     httpOnly: true,
     secure: true,
     maxAge: 0,

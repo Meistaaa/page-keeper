@@ -60,20 +60,19 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Fixed Navbar for Admin */}
-      {user?.role === "admin" && (
+      {user?.role === "admin" ? (
         <div className="fixed top-0 left-0 w-full bg-[#4B3A76] text-white px-4 py-3 shadow-md flex justify-between items-center z-50">
           <span className="font-semibold text-lg">Admin Panel</span>
           <Link
             to="/dashboard"
-            className="bg-[#98F9B3] text-black px-4 py-2 rounded-md hover:bg-[#98F9B3]/90"
+            className="bg-[#98F9B3] text-black rounded-md hover:bg-[#98F9B3]/90"
           >
             Go to Dashboard
           </Link>
         </div>
-      )}
+      ) : null}
 
-      <nav className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8 mt-[50px]">
+      <nav className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8 ">
         {/* FOR SMALL SCREENS  */}
         <div className="md:hidden mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2 md:hidden">
