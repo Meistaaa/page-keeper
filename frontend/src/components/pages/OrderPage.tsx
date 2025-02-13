@@ -84,7 +84,7 @@ const OrderForm = () => {
   };
 
   return (
-    <div className="  container mx-auto  px-4 py-12 md:px-6 lg:px-8 ">
+    <div className="container mx-auto  px-4 py-12 md:px-6 lg:px-8 xl:px-0 max-w-7xl">
       <Card className="shadow-lg rounded-xl border border-gray-200">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold text-gray-800">
