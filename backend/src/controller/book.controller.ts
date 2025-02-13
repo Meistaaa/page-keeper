@@ -348,7 +348,7 @@ export const getRecentlySoldBooks = asyncHandler(
 
     // Get books sold in the last 7 days
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 30);
 
     const query = {
       lastSoldAt: { $gte: sevenDaysAgo, $ne: null },

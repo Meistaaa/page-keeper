@@ -35,6 +35,7 @@ export default function RecentlySoldBooksPage() {
     const fetchRecentlyOrderedBooks = async () => {
       setLoading(true); // Start loading
       try {
+        console.log("object");
         const res = await axios.get(
           `${
             import.meta.env.VITE_API_URI

@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <div>
       <Hero />
-      <main className="container px-4 py-12 md:px-6 lg:px-8">
+      <main className=" px-4 py-12 md:px-6 lg:px-8 ">
         <Category />
         <BestSellingBooks />
         <TrendingBooks />

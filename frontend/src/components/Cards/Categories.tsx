@@ -47,8 +47,8 @@ export default function Category() {
   };
 
   return (
-    <div className="my-16 space-y-12">
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
+    <div className="my-16 space-y-12 mx-auto  max-w-7xl">
+      <div className="flex justify-between items-center mx-auto">
         <h1 className="text-3xl font-bold">Categories</h1>
         <a
           href="/books/genres"
