@@ -84,7 +84,7 @@ const OrderForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="  container mx-auto  px-4 py-12 md:px-6 lg:px-8 ">
       <Card className="shadow-lg rounded-xl border border-gray-200">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold text-gray-800">
@@ -129,7 +129,9 @@ const OrderForm = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-600">Your cart is empty.</p>
+              <p className="text-sm text-gray-600  mt-24">
+                Your cart is empty.
+              </p>
             )}
           </div>
 

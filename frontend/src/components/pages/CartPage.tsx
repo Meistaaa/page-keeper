@@ -47,10 +47,10 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto  px-4 py-12 md:px-6 lg:px-8 xl:px-0 max-w-7xl">
       <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
 
-      {cart?.items.length === 0 ? (
+      {cart?.items.length === 0 || cart === null ? (
         <div className="text-center">
           <p className="text-lg">Your cart is empty.</p>
           <Button className="mt-4" onClick={() => navigate("/books/all-books")}>

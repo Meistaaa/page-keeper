@@ -59,18 +59,24 @@ export default function Navbar() {
   return (
     <>
       {user?.role === "admin" ? (
-        <div className="fixed top-0 left-0 w-full bg-[#4B3A76] text-white px-4 py-3 shadow-md flex justify-between items-center z-50">
-          <span className="font-semibold text-lg">Admin Panel</span>
-          <Link
-            to="/dashboard"
-            className="bg-[#98F9B3] text-black rounded-md hover:bg-[#98F9B3]/90"
-          >
-            Go to Dashboard
-          </Link>
+        <div>
+          <div className=" w-full bg-[#4B3A76]  text-white px-4 py-3 shadow-md flex justify-between items-center  fixed top-0 left-0  z-50">
+            <span className="font-semibold text-lg">Admin Panel</span>
+            <Link
+              to="/dashboard"
+              className="bg-[#98F9B3] text-black rounded-md hover:bg-[#98F9B3]/90"
+            >
+              Go to Dashboard
+            </Link>
+          </div>
         </div>
       ) : null}
 
-      <nav className="w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8 ">
+      <nav
+        className={`${
+          user?.role === "admin" ? "mt-12" : "mt-0"
+        }  w-full bg-[#5D4B8C] px-4 py-8 md:px-6 lg:px-8 fixed top-0 left-0 z-20`}
+      >
         {/* FOR SMALL SCREENS  */}
         <div className="md:hidden mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-2 md:hidden">
@@ -127,7 +133,10 @@ export default function Navbar() {
         </div>
 
         {/* Navigation Links for Larger Screens */}
-        <div className="hidden md:flex mx-auto max-w-7xl items-center justify-between">
+        <div
+          className="hidden md:flex mx-auto max-w-7xl items-center justify-between 
+         "
+        >
           <Link to="/" className="flex items-center text-2xl font-semibold">
             <span className="text-[#98F9B3]">Page</span>
             <span className="text-white">Keeper</span>
