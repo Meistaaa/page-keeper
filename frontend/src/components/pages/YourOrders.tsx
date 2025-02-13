@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from "../Loading";
 
 interface OrderItem {
   book: {
@@ -47,7 +48,11 @@ const YourOrders = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center mt-4">Loading your orders...</div>;
+    return (
+      <div className="text-center mt-4">
+        <Loading></Loading>
+      </div>
+    );
   }
 
   if (error) {
@@ -55,7 +60,7 @@ const YourOrders = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">Your Orders</h1>
       {orders?.length === 0 ? (
         <p className="text-center text-gray-600">You have no orders yet.</p>

@@ -6,6 +6,7 @@ import BookCard from "../Cards/Book";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
+import Loading from "../Loading";
 
 const BestSellingBooks = () => {
   const cartContext = useContext(CartContext);
@@ -60,6 +61,9 @@ const BestSellingBooks = () => {
       </div>
     );
   }
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="my-16 space-y-12">
       <div className="flex justify-between items-center max-w-7xl  mx-auto">
@@ -70,7 +74,7 @@ const BestSellingBooks = () => {
           </span>
         </h1>
         <a
-          href="/books"
+          href="/books/best-selling-books?page=1&limit=4"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

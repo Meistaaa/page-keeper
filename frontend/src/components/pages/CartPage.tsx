@@ -1,19 +1,29 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
 import { CartItem } from "@/types/Cart";
 import { CartCard } from "../Cards/CartCard";
+import Loading from "@/components/Loading"; // Import the Loading component
 
 export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
   const navigate = useNavigate();
 
   const cartContext = useContext(CartContext);
   if (!cartContext) {
     throw new Error("CartPage must be used within a CartProvider");
   }
+
   const { cart, removeFromCart, updateQuantity } = cartContext;
+
+  // Simulate data fetching/loading
+  useEffect(() => {
+    if (cart) {
+      setLoading(false); // End loading once cart data is available
+    }
+  }, [cart]);
 
   const toggleSelectItem = (item: CartItem) => {
     setSelectedItems((prevSelected) =>
@@ -32,8 +42,12 @@ export default function CartPage() {
     }
   };
 
+  if (loading) {
+    return <Loading />; // Show the Loading component while loading
+  }
+
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
 
       {cart?.items.length === 0 ? (

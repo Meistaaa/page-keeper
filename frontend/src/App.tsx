@@ -21,6 +21,7 @@ import ProtectedDashboardRoute from "./components/ProtectedDashboardRoute";
 import Dashboard from "./components/pages/Dashboard";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import DashBookPage from "./components/dashboard/DashBookPage";
+import BestSellingBooksPage from "./components/pages/BestSellingBooksPage";
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
               element={
                 <Layout>
                   <TrendingBooksPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/books/best-selling-books"
+              element={
+                <Layout>
+                  <BestSellingBooksPage />
                 </Layout>
               }
             />

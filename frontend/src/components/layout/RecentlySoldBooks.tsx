@@ -6,6 +6,7 @@ import BookCard from "../Cards/Book";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
+import Loading from "../Loading";
 
 const RecentlySoldBooks = () => {
   const cartContext = useContext(CartContext);
@@ -62,6 +63,9 @@ const RecentlySoldBooks = () => {
       </div>
     );
   }
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="my-16 space-y-12">
       <div className="flex justify-between items-center max-w-7xl  mx-auto">
@@ -72,7 +76,7 @@ const RecentlySoldBooks = () => {
           </span>
         </h1>
         <a
-          href="/books/recently-sold-books?page=1&limit=2"
+          href="/books/recently-sold-books?page=1&limit=4"
           className="text-primary hover:underline inline-flex items-center"
         >
           View All

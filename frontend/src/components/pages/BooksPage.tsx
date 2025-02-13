@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Book } from "@/types/Book";
 import BookCard from "../Cards/Book";
 import { CartContext } from "@/context/CartContext";
+import Loading from "@/components/Loading"; // Import the Loading component
 
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -31,6 +33,7 @@ export default function BooksPage() {
 
   useEffect(() => {
     const fetchTrendingBooks = async () => {
+      setLoading(true); // Start loading
       try {
         const res = await axios.get(
           `${
@@ -40,12 +43,13 @@ export default function BooksPage() {
             withCredentials: true,
           }
         );
-        console.log(res.data.data);
-        console.log(res.data.data.pagination.totalPages);
+
         setBooks(res.data.data.books);
         setTotalPages(res.data.data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching trending books:", error);
+      } finally {
+        setLoading(false); // End loading
       }
     };
 
@@ -56,8 +60,12 @@ export default function BooksPage() {
     navigate(`/books/all-books?page=${newPage}`);
   };
 
+  if (loading) {
+    return <Loading />; // Show the Loading component while data is being fetched
+  }
+
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-4 mt-12">All Books</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {books?.map((book) => (

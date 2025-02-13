@@ -6,6 +6,7 @@ import BookCard from "../Cards/Book";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "@/context/CartContext";
+import Loading from "../Loading";
 
 const RelatedBooks = ({ id }: { id: string }) => {
   const cartContext = useContext(CartContext);
@@ -58,6 +59,9 @@ const RelatedBooks = ({ id }: { id: string }) => {
         Error loading books: {error}
       </div>
     );
+  }
+  if (loading) {
+    return <Loading />;
   }
   return (
     <div className="my-16 space-y-12">

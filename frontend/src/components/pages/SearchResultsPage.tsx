@@ -4,6 +4,7 @@ import BookCard from "../Cards/Book";
 import { Book } from "@/types/Book";
 import { CartContext } from "@/context/CartContext";
 import axios from "axios";
+import Loading from "../Loading";
 
 export default function SearchResultsPage() {
   const location = useLocation();
@@ -41,9 +42,7 @@ export default function SearchResultsPage() {
       fetchSearchResults();
     }
   }, [query]);
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+
   const handleNavigateToBook = (id: string) => {
     navigate(`/books/${id}`);
   };
@@ -54,9 +53,11 @@ export default function SearchResultsPage() {
       console.error("Failed to add item to cart:", error);
     }
   };
-
+  if (loading) {
+    return <Loading />;
+  }
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-4">Search Results for "{query}"</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {books?.length > 0 ? (

@@ -17,10 +17,7 @@ export default function BookCard({
   const { title, author, coverImage, price } = book;
 
   return (
-    <Card
-      onClick={onCardClick}
-      className="w-[300px] overflow-hidden group mr-12"
-    >
+    <Card onClick={onCardClick} className="w-full overflow-hidden group mr-12">
       <div className="relative">
         {/* {discount && (
           <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">

@@ -7,7 +7,7 @@ import BookCard from "../Cards/Book";
 import { CartContext } from "@/context/CartContext";
 import Loading from "@/components/Loading"; // Import the Loading component
 
-export default function RecentlySoldBooksPage() {
+export default function BestSellingBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
@@ -38,14 +38,12 @@ export default function RecentlySoldBooksPage() {
         const res = await axios.get(
           `${
             import.meta.env.VITE_API_URI
-          }/api/books/recently-ordered-books?page=${page}&limit=4`,
+          }/api/books/get-best-selling-books?page=${page}&limit=4`,
           {
             withCredentials: true,
           }
         );
-        console.log(res.data.data.recentlySoldBooks);
-        console.log(res.data.data);
-        setBooks(res.data.data.recentlySoldBooks);
+        setBooks(res.data.data.bestSellingBooks);
         setTotalPages(res.data.data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching trending books:", error);
@@ -67,8 +65,8 @@ export default function RecentlySoldBooksPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="w-full max-w-7xl mx-auto py-16 flex flex-col gap-12">
-        <h2 className="text-2xl font-bold mb-4">Recently Sold Books</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <h2 className="text-2xl font-bold mb-4">Best Selling Books</h2>
+        <div className="flex flex-wrap items-center justify-center">
           {books?.map((book) => (
             <BookCard
               key={book._id}

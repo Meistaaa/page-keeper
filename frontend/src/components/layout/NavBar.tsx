@@ -20,8 +20,6 @@ const menuItems: MenuItems[] = [
   { to: "/", label: "Home" },
   { to: "/your-orders", label: " Orders" },
   { to: "/books/all-books", label: " Books" },
-  { to: "/wishlist", label: "Wishlist" },
-  { to: "/contact", label: "Contact" },
   { to: "/cart", label: "Your Cart" },
 ];
 
