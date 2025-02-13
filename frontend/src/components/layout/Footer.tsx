@@ -30,7 +30,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-6 flex flex-col  ">
-            <div className="space-y-6 flex flex-col items-start bg-red-50">
+            <div className="space-y-6 flex flex-col items-start ">
               <h3 className="text-lg font-semibold">Contact Us</h3>
               <div className="flex flex-col space-y-2">
                 <Link to="/about" className="text-sm hover:text-gray-300">
